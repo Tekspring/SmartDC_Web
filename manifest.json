@@ -1,0 +1,32 @@
+{
+   "action": {
+      "default_icon": {
+         "240": "icon.png"
+      },
+      "default_title": "Smart DC"
+   },
+   "commands": {
+      "_execute_action": {
+      }
+   },
+   "content_security_policy": {
+      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+   },
+
+
+   "default_locale": "en",
+   "description": "Smart DC",
+   "icons": {
+      "240": "icon.png"
+   },
+   
+   "manifest_version": 3,
+   "name": "Smart DC",
+   "offline_enabled": true,
+   "permissions": [ "tabs", "storage", "notifications", "unlimitedStorage"],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.23.1006",
+   "externally_connectable": { 
+      "ids": ["*"] 
+   }
+}
