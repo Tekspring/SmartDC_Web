@@ -2961,7 +2961,7 @@ var aboutContent = '																					\
 		<BR>																							\
 		<label><font size="5" color="#FF0"><center>Smart DC for Chrome OS</center></font></label>		\
 		<BR>																							\
-		<label><font size="3" color="#88F"><center>Version 1.23.1006</center></font></label>			\
+		<label><font size="3" color="#88F"><center>Version 1.24.0527</center></font></label>			\
 		<BR>																							\
 		<BR>																							\
 	';
