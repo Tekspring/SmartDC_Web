@@ -11,53 +11,11 @@ window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileS
 var appFs;
 var maxFileSizeQuota = 512 * 1024 * 1024;
 
-if ('webkitPersistentStorage' in navigator) {
-	// navigator.webkitPersistentStorage.requestQuota(maxFileSizeQuota, function (grantedSize) {
-	// 	window.requestFileSystem(window.PERSISTENT, grantedSize, function (fileSystem) {
-	// 		appFs = fileSystem;
-	// 	}, onFsError);
-	// }, onFsError);
-}
-else {
-	console.log("without webkit Persistent Storage");
-
-	if ('permissions'  in navigator) {
-		console.log("webkit permissions check");		
-	}
-	else {
-		console.log("without webkit permissions");
-	}
-
-	if ('mediaDevices'  in navigator) {
-		console.log("webkit mediaDevices check");
-	}
-	else {
-		console.log("without webkit mediaDevices");
-	}
-}
-
-function detectBrowser() {
-    var userAgent = navigator.userAgent;
-
-    if (userAgent.match(/chrome|chromium|crios/i)) {
-        return "Chrome";
-    } else if (userAgent.match(/firefox|fxios/i)) {
-        return "Firefox";
-    } else if (userAgent.match(/safari/i)) {
-        return "Safari";
-    } else if (userAgent.match(/opr\//i)) {
-        return "Opera";
-    } else if (userAgent.match(/edg/i)) {
-        return "Edge";
-    } else if (userAgent.match(/msie|trident/i)) {
-        return "Internet Explorer";
-    } else {
-        return "unknown";
-    }
-}
-
-var Browser = detectBrowser();
-console.log("Browser:", Browser);
+navigator.webkitPersistentStorage.requestQuota(maxFileSizeQuota, function (grantedSize) {
+	window.requestFileSystem(window.PERSISTENT, grantedSize, function (fileSystem) {
+		appFs = fileSystem;
+	}, onFsError);
+}, onFsError);
 
 //chrome.windows.update(windowId, { 'alwaysOnTop': false });
 //chrome.app.window.current().setAlwaysOnTop(false);
@@ -3003,7 +2961,7 @@ var aboutContent = '																					\
 		<BR>																							\
 		<label><font size="5" color="#FF0"><center>Smart DC for Chrome OS</center></font></label>		\
 		<BR>																							\
-		<label><font size="3" color="#88F"><center>Version 1.23.1006</center></font></label>			\
+		<label><font size="3" color="#88F"><center>Version 1.24.0527</center></font></label>			\
 		<BR>																							\
 		<BR>																							\
 	';
@@ -3120,18 +3078,10 @@ var u4 =
 	[  1024,    768,  0 ],
 ]
 
-var VideoResolutionList =
-[
-	// width  height   def 
-	[  1920,   1080,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
 
 var DevList =
 [
 	// VID     PID 
-	[ 0x0000, 0x0000, VideoResolutionList],
 	[ 0x04FC, 0x5310, vrl5330 ],
 	[ 0x04FC, 0x5330, vrl5330 ],
 	[ 0x04FC, 0x5339, vrl5330 ],
@@ -3161,6 +3111,16 @@ var DevList =
 	//[ 0x045E, 0x0811, vrl6350 ], //--- Microsoft PC Cam
 	//[ 0x046D, 0x0821, vrl6350 ], //  Logitech C910
 ];
+
+var VideoResolutionList =
+[
+	// width  height   def 
+	[  1920,   1080,  0 ],
+	[  1280,    720,  1 ],
+	[  1024,    768,  0 ],
+];
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // variable
@@ -3342,8 +3302,6 @@ function getCanvasGroupContext(modeCfg)
 	createDivElement('baseArea', 'imageDisplayArea');
 
 	createCanvasElement('imageDisplayArea', 'displayCanvas');
-	//createElement("svg", 'imageDisplayArea', "svgTest");
-	//createElement("canvas", "svgTest", 'displayCanvas');
 
 	createCanvasElement('imageDisplayArea', 'saveFileCanvas');
 
@@ -6559,6 +6517,8 @@ var IsDeviceConnected = false;
 
 var checkSources = function(sourceInfos)
 {
+	//console.log("check source");
+
 	var getDevice = false;
 
     for(var i=0 ; i < sourceInfos.length; i++)	
@@ -6569,8 +6529,6 @@ var checkSources = function(sourceInfos)
 		{
 	        if (sourceInfo.label.length > 0)
 	        {
-				
-
 	            var getVendorID = parseInt("0x"+sourceInfo.label.split(":")[0].split("(")[1], 16);
 				var getProductID = parseInt("0x"+sourceInfo.label.split(")")[0].split(":")[1], 16);
 
@@ -6585,21 +6543,14 @@ var checkSources = function(sourceInfos)
 
                 if ( true === isSupportedDevice( getVendorID, getProductID ) )
                 {
+					// console.log("use this");
+					// console.log(sourceInfo);
+
 					fcUpdateVideoResolution();
 					getDevice = true;
                     choseVideoSource = sourceInfo.deviceId;
 					break;
                 }
-
-				if ( sourceInfo.label == 'Document Camera')
-				{
-					console.log("find DC");	
-					appFC.reqVideoResolutionList = DevList[0][2];
-					fcUpdateVideoResolution();
-					getDevice = true;
-					choseVideoSource = sourceInfo.deviceId;
-					break;
-				}
 	        }
 		}
     }
@@ -6610,6 +6561,7 @@ var checkSources = function(sourceInfos)
 async function checkCameraPermission()
 {
 	await navigator.permissions.query({name: 'camera'}).then(async function(permissionObj){
+
 		if (permissionObj.state != 'granted')
 		{
 			// pop up a webpage for hit
@@ -6629,28 +6581,14 @@ async function checkCameraPermission()
 			await navigator.mediaDevices.getUserMedia(constraints).then().catch();
 		}
 	});
-
 }
 
 async function tryConnectDevice()
 {
 	//console.log("try connext device");
-	var sourceInfos;
 
-	if ( Browser == 'Firefox' ) {
-		var constraints = {
-			audio: true,
-			video: true
-		};
-		await navigator.mediaDevices.getUserMedia(constraints).then(
-			sourceInfos = await navigator.mediaDevices.enumerateDevices()
-		).catch();
-	}
-	else {
-		await checkCameraPermission();
-		sourceInfos = await navigator.mediaDevices.enumerateDevices();
-	}
-	console.log(sourceInfos);
+	await checkCameraPermission();
+	var sourceInfos = await navigator.mediaDevices.enumerateDevices();
 	var Exist = await checkSources(sourceInfos);
 
 	if (Exist)
@@ -6750,21 +6688,14 @@ function disconnectVideoSrc()
         var rgx = /Chrome\/(\d+)/i;
         var match = appVersion.match(rgx);
 
-		if ( match === null )
-		{
-			window.stream.getVideoTracks()[0].stop();
-		}
-		else
-		{
-			if ( match[0] != null && match[1] <= 46 )
-			{
-				window.stream.stop();
-			}
-			else
-			{
-				window.stream.getVideoTracks()[0].stop();
-			}
-		}        
+        if ( match[1] <= 46 )
+        {
+            window.stream.stop();
+        }
+        else
+        {
+            window.stream.getVideoTracks()[0].stop();
+        }
     }
 }
 
