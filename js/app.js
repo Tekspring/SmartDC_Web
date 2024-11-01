@@ -35,31 +35,6 @@ function openDatabase() {
 	});
 }
 
-// if ('webkitPersistentStorage' in navigator) {
-// 	// navigator.webkitPersistentStorage.requestQuota(maxFileSizeQuota, function (grantedSize) {
-// 	// 	window.requestFileSystem(window.PERSISTENT, grantedSize, function (fileSystem) {
-// 	// 		appFs = fileSystem;
-// 	// 	}, onFsError);
-// 	// }, onFsError);
-// }
-// else {
-// 	console.log("without webkit Persistent Storage");
-
-// 	if ('permissions' in navigator) {
-// 		console.log("webkit permissions check");
-// 	}
-// 	else {
-// 		console.log("without webkit permissions");
-// 	}
-
-// 	if ('mediaDevices' in navigator) {
-// 		console.log("webkit mediaDevices check");
-// 	}
-// 	else {
-// 		console.log("without webkit mediaDevices");
-// 	}
-// }
-
 function detectBrowser() {
 	var userAgent = navigator.userAgent;
 
@@ -307,7 +282,9 @@ function createToolBar(btnData, cssCfg, parentId, id, position, funcClick) {
 		var attrTop;
 
 		curY = startY + index * offsetY;
-		attrTop = ' top: ' + curY + 'px;';
+
+		if (isBottom) attrTop = ' top: ' + (curY) + 'px;';
+		else attrTop = ' top: ' + curY + 'px;';
 
 		return previousValue + attrLeft + attrTop;
 	});
@@ -350,7 +327,7 @@ function createToolBar(btnData, cssCfg, parentId, id, position, funcClick) {
 		(function () {
 			var cssW =
 			{
-				top: 'calc(100% - ' + appCfg.scrollIconH + 'px)',
+				top: 'calc(100% - ' + (appCfg.scrollIconH) + 'px)',
 				left: '340px',//appCfg.toolBarIconW + 'px',
 				height: '30px',//appCfg.scrollIconH + 'px',//appCfg.toolBarIconH + 'px',
 				width: '60px',
@@ -2821,7 +2798,7 @@ var aboutContent = '																					\
 		<BR>																							\
 		<label><font size="5" color="#FF0"><center>Smart DC for Chrome OS</center></font></label>		\
 		<BR>																							\
-		<label><font size="3" color="#88F"><center>Version 1.24.1026</center></font></label>			\
+		<label><font size="3" color="#88F"><center>Version 1.24.1101</center></font></label>			\
 		<BR>																							\
 		<BR>																							\
 	';
@@ -2840,143 +2817,143 @@ function afterInitAboutDlg() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 var vrl5330 =
-[
-	// width  height   def 
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var vrl6330 =
-[
-	// width  height   def 
-	[  1920,   1080,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[1920, 1080, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var vrl6350 =
-[
-	// width  height   def 
-	[  1920,   1080,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[1920, 1080, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var vrl6500 =
-[
-	// width  height   def 
-	[  1920,   1080,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[1920, 1080, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var vrl8589 =
-[
-	// width  height   def 
-	[  4160,   3120,  0 ],
-	[  3840,   2160,  0 ],
-	[  2048,   1536,  0 ],
-	[  1920,   1080,  0 ],
-	[  1280,   1024,  0 ],
-	[  1280,    960,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-	[   640,    480,  0 ],
-];
+	[
+		// width  height   def 
+		[4160, 3120, 0],
+		[3840, 2160, 0],
+		[2048, 1536, 0],
+		[1920, 1080, 0],
+		[1280, 1024, 0],
+		[1280, 960, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+		[640, 480, 0],
+	];
 
 var vrl2089 =
-[
-	// width  height   def 
-	[  2592,   1944,  0 ],
-	[  2048,   1536,  0 ],
-	[  1920,   1080,  0 ],
-	[  1600,   1200,  0 ],
-	[  1280,    960,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[2592, 1944, 0],
+		[2048, 1536, 0],
+		[1920, 1080, 0],
+		[1600, 1200, 0],
+		[1280, 960, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var vrl2620 =
-[
-	// width  height   def 
-	[  3264,   2448,  0 ],
-	[  2592,   1944,  0 ],
-	[  2048,   1536,  0 ],
-	[  1920,   1080,  0 ],
-	[  1600,   1200,  0 ],
-	[  1280,    960,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[3264, 2448, 0],
+		[2592, 1944, 0],
+		[2048, 1536, 0],
+		[1920, 1080, 0],
+		[1600, 1200, 0],
+		[1280, 960, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var vrl2688 =
-[
-	// width  height   def 
-	[  3840,   3104,  0 ],
-	[  3840,   2160,  0 ],
-	[  3264,   2448,  0 ],
-	[  2592,   1944,  0 ],
-	[  2048,   1536,  0 ],
-	[  1920,   1080,  0 ],
-	[  1600,   1200,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[3840, 3104, 0],
+		[3840, 2160, 0],
+		[3264, 2448, 0],
+		[2592, 1944, 0],
+		[2048, 1536, 0],
+		[1920, 1080, 0],
+		[1600, 1200, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var u4 =
-[
-	// width  height   def 
-	[  2560,   1920,  0 ],
-	[  2560,   1440,  0 ],
-	[  2048,   1536,  0 ],
-	[  1920,   1080,  0 ],
-	[  1600,   1200,  0 ],
-	[  1280,    960,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-]
+	[
+		// width  height   def 
+		[2560, 1920, 0],
+		[2560, 1440, 0],
+		[2048, 1536, 0],
+		[1920, 1080, 0],
+		[1600, 1200, 0],
+		[1280, 960, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	]
 
 var VideoResolutionList =
-[
-	// width  height   def 
-	[  1920,   1080,  0 ],
-	[  1280,    720,  1 ],
-	[  1024,    768,  0 ],
-];
+	[
+		// width  height   def 
+		[1920, 1080, 0],
+		[1280, 720, 1],
+		[1024, 768, 0],
+	];
 
 var DevList =
-[
-	// VID     PID 
-	[ 0x0000, 0x0000, VideoResolutionList],
-	[ 0x04FC, 0x5310, vrl5330 ],
-	[ 0x04FC, 0x5330, vrl5330 ],
-	[ 0x04FC, 0x5339, vrl5330 ],
-	
-	[ 0x04FC, 0x6330, vrl6330 ],
-	[ 0x04FC, 0x6339, vrl6330 ],
+	[
+		// VID     PID 
+		[0x0000, 0x0000, VideoResolutionList],
+		[0x04FC, 0x5310, vrl5330],
+		[0x04FC, 0x5330, vrl5330],
+		[0x04FC, 0x5339, vrl5330],
 
-	[ 0x04FC, 0x6350, vrl6350 ],
-	[ 0x04FC, 0x6359, vrl6350 ],
+		[0x04FC, 0x6330, vrl6330],
+		[0x04FC, 0x6339, vrl6330],
 
-	[ 0x04FC, 0x6500, vrl6500 ],
-	[ 0x04FC, 0x6509, vrl6500 ],
+		[0x04FC, 0x6350, vrl6350],
+		[0x04FC, 0x6359, vrl6350],
 
-	[ 0x04FC, 0x8589, vrl8589 ],
-	[ 0x114D, 0x8589, vrl8589 ],
-	
-	[ 0x04FC, 0x2620, vrl2620 ],
-	[ 0x04FC, 0x2680, vrl2620 ],
-	
-	[ 0x04FC, 0x2089, vrl2089 ],
+		[0x04FC, 0x6500, vrl6500],
+		[0x04FC, 0x6509, vrl6500],
 
-	[ 0x04FC, 0x2688, vrl2688 ],
+		[0x04FC, 0x8589, vrl8589],
+		[0x114D, 0x8589, vrl8589],
 
-	[ 0x04FC, 0x2650, u4	  ],
+		[0x04FC, 0x2620, vrl2620],
+		[0x04FC, 0x2680, vrl2620],
 
-	// 2020-12-07
-	//[ 0x045E, 0x0811, vrl6350 ], //--- Microsoft PC Cam
-	//[ 0x046D, 0x0821, vrl6350 ], //  Logitech C910
-];
+		[0x04FC, 0x2089, vrl2089],
+
+		[0x04FC, 0x2688, vrl2688],
+
+		[0x04FC, 0x2650, u4],
+
+		// 2020-12-07
+		//[ 0x045E, 0x0811, vrl6350 ], //--- Microsoft PC Cam
+		//[ 0x046D, 0x0821, vrl6350 ], //  Logitech C910
+	];
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // variable
@@ -3306,15 +3283,19 @@ function adjImageDisplayArea() {
 	cssCommonSizeObj.left = x;
 	cssCommonSizeObj.top = y;
 
-	cssCommonSizeObj.width = w;
-	cssCommonSizeObj.height = h;
+	cssCommonSizeObj.width = '1920px';
+	cssCommonSizeObj.height = '1080px';
+	// cssCommonSizeObj.width = w;
+	// cssCommonSizeObj.height = h;
 
 	id$ = $('#displayCanvas');
 
 	id$.css(cssCommonSizeObj);
 
-	id$.attr('width', w);
-	id$.attr('height', h);
+	id$.attr('width', '1920px');
+	id$.attr('height', '1080px');
+	// id$.attr('width', w);
+	// id$.attr('height', h);
 
 	dispX = x;
 	dispY = y;
@@ -3357,9 +3338,9 @@ function initToolBar() {
 	updateToolBar(thumbnailToolBarData);
 
 	createToolBar(picPlaybackToolBarData, cssToolBar, 'uiArea', 'picPlaybackToolBar', 'left', picturePlaybackToolBarOnClick);
-	updateToolBar(picPlaybackToolBarData),
+	updateToolBar(picPlaybackToolBarData);
 
-		createToolBar(drawingBoardToolBarData, cssToolBar, 'uiArea', 'drawingBoardToolBar', 'left', drawingBoardToolBarOnClick);
+	createToolBar(drawingBoardToolBarData, cssToolBar, 'uiArea', 'drawingBoardToolBar', 'left', drawingBoardToolBarOnClick);
 	updateToolBar(drawingBoardToolBarData);
 
 	createToolBar(previewToolBarData, cssToolBar, 'uiArea', 'previewToolBar', 'left', previewToolBarOnClick);
@@ -3828,7 +3809,7 @@ function initSettingDlg() {
 	var totalW, totalH;
 	var curX, curY;
 
-	var noSettingLine = 3;
+	var noSettingLine = 4;
 
 	if (1 === appCfg.disableDrawTextSetting) {
 		noSettingLine = 1;
@@ -3870,6 +3851,9 @@ function initSettingDlg() {
 
 	createVideoResolutionScrollBar('settingDlg', 'sdVideoRsoScrollbar', appFC.curVideoResolutionList, curX, curY, appCfg.sdVideoRsoW);
 
+	curY += (appCfg.sdIconH + appCfg.sdGroupGap);
+
+	createAudioinputScrollBar('settingDlg', 'sdAudioinputScrollbar', appFC.curAudioinputList, curX, curY, appCfg.sdVideoRsoW);
 	curY += (appCfg.sdIconH + appCfg.sdGroupGap);
 
 	// test settings
@@ -3943,7 +3927,6 @@ function createSettingDlgIcon(parentId, id, pic, startX, startY) {
 
 function updateVideoResolutionElement(data) {
 	cleanVideoResolutionElement();
-
 	createVideoResolutionElement(data);
 }
 
@@ -4014,6 +3997,32 @@ function createVideoResolutionScrollBar(parendId, id, data, startX, startY, widt
 	$(eleId).css('top', (startY + (appCfg.sdIconH - appCfg.sdScrollH) / 2) + 'px');
 	$(eleId).css('left', startX + 'px');
 	$(eleId).css('width', width + 'px');
+	$(eleId).css('height', appCfg.sdScrollH + 'px');
+	$(eleId).css('position', 'absolute');
+}
+
+function updateAudioinputElement() {
+	cleanAudioinputElement();
+}
+
+function cleanAudioinputElement() {
+	var eleId = "#" + appFC.idAudioinputSelect;
+	$(eleId + " > option").remove();
+}
+
+function createAudioinputScrollBar(parendId, id, data, startX, startY, width) {
+	var eleId;
+
+	appFC.idAudioinputSelect = id;
+
+	createSelectElement(parendId, id);
+	//createAudioinputElement(data);
+
+	eleId = '#' + id;
+
+	$(eleId).css('top', (startY + (appCfg.sdIconH - appCfg.sdScrollH) / 2) + 'px');
+	$(eleId).css('left', startX + 'px');
+	$(eleId).css('width', (width * 2 + appCfg.sdIconScrollGap) + 'px');
 	$(eleId).css('height', appCfg.sdScrollH + 'px');
 	$(eleId).css('position', 'absolute');
 }
@@ -5867,7 +5876,8 @@ async function lsSaveFilesToSelectedFolder(eleId, format) {
 			var imageUrl;
 
 			// video
-			if (galleryData[i].name.indexOf("mp4") > 0) {
+			if (galleryData[i].name.indexOf("mp4") != -1 ||
+				galleryData[i].name.indexOf("webm") != -1) {
 				imageUrl = URL.createObjectURL(galleryData[i].video);
 			}
 			// image
@@ -6124,348 +6134,6 @@ async function lsSaveFilesToSelectedFolder(eleId, format) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// constant 
-///////////////////////////////////////////////////////////////////////////////////////////
-
-var choseVideoSource = '';
-var currVideoSource = '';
-
-var videoW = 1280;	//appCfg.defPreviewRsoX;
-var videoH = 720;	//appCfg.defPreviewRsoY;
-
-var videoElement = document.getElementById('videoSrc');
-
-var videoLastUpdateTime;
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// check device 
-///////////////////////////////////////////////////////////////////////////////////////////
-
-function isSupportedDevice(vid, pid) {
-	var len = DevList.length;
-	var i;
-
-	for (i = 0; i < len; i++) {
-		if (vid === DevList[i][0]) {
-			if (pid === DevList[i][1]) {
-				appFC.reqVideoResolutionList = DevList[i][2];
-
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// connect stream 
-///////////////////////////////////////////////////////////////////////////////////////////
-var IsDeviceConnected = false;
-
-var checkSources = function (sourceInfos) {
-	console.log(sourceInfos);
-
-	var getDevice = false;
-	var tmpDeviceId = '';
-
-	for (var i = 0; i < sourceInfos.length; i++) {
-		var sourceInfo = sourceInfos[i];
-
-		if (sourceInfo.kind === 'videoinput') {
-			if (sourceInfo.label.length > 0) {
-
-				var getVendorID = parseInt("0x" + sourceInfo.label.split(":")[0].split("(")[1], 16);
-				var getProductID = parseInt("0x" + sourceInfo.label.split(")")[0].split(":")[1], 16);
-
-				console.log("VID_PID =", getVendorID.toString(16), " _ ", getProductID.toString(16));
-
-				if (true === isSupportedDevice(getVendorID, getProductID)) {
-					// console.log("use this");
-					// console.log(sourceInfo);
-
-					fcUpdateVideoResolution();
-					getDevice = true;
-					choseVideoSource = sourceInfo.deviceId;
-					break;
-				}
-
-				if (sourceInfo.label == 'Document Camera') {
-					console.log("find DC");
-
-					appFC.reqVideoResolutionList = DevList[0][2];
-					fcUpdateVideoResolution();
-					getDevice = true;
-					choseVideoSource = sourceInfo.deviceId;
-					break;
-				}
-				else {
-					tmpDeviceId = sourceInfo.deviceId;
-				}
-			}
-		}
-	}
-
-	if (!getDevice && tmpDeviceId != '') {
-		console.log("find Default Camera");
-
-		appFC.reqVideoResolutionList = DevList[0][2];
-		fcUpdateVideoResolution();
-		getDevice = true;
-		choseVideoSource = sourceInfo.deviceId;
-	}
-
-	return getDevice;
-}
-
-async function checkCameraPermission() {
-	await navigator.permissions.query({ name: 'camera' }).then(async function (permissionObj) {
-		if (permissionObj.state != 'granted') {
-			// pop up a webpage for hit
-			// console.log("create tab");
-
-			// chrome.tabs.create({
-			// 	url: chrome.runtime.getURL('cam-mic-req.html')
-			// }, function(tab) {
-
-			// })
-
-			// old solution
-			var constraints = {
-				audio: true,
-				video: true
-			};
-			await navigator.mediaDevices.getUserMedia(constraints).then().catch();
-		}
-	});
-
-}
-
-async function tryConnectDevice() {
-	//console.log("try connext device");
-	var sourceInfos;
-
-	if (Browser == 'Firefox') {
-		var constraints = {
-			audio: true,
-			video: true
-		};
-		await navigator.mediaDevices.getUserMedia(constraints).then(
-			sourceInfos = await navigator.mediaDevices.enumerateDevices()
-		).catch();
-	}
-	else {
-		await checkCameraPermission();
-		sourceInfos = await navigator.mediaDevices.enumerateDevices();
-	}
-	console.log(sourceInfos);
-	var Exist = await checkSources(sourceInfos);
-
-	if (Exist) {
-		// change video source
-		if (!IsDeviceConnected || currVideoSource != choseVideoSource) {
-			if (IsRecording) {
-				await StopRecord();
-			}
-			connectVideoSrc();
-		}
-	}
-	else {
-		// disconnect video source
-		//if(!window.stream && window.stream.active == false)
-		if (IsDeviceConnected) {
-			if (IsRecording) {
-				await StopRecord();
-			}
-
-			IsDeviceConnected = false;
-			disconnectVideoSrc();
-		}
-	}
-
-
-	// checkCameraPermission().then(async function()
-	// {
-	// 	await navigator.mediaDevices.enumerateDevices().then(checkSources).then(function (Exist) {
-
-	// 		if (Exist)
-	// 		{
-	// 			// change video source
-	// 			if(!IsDeviceConnected || currVideoSource!=choseVideoSource)
-	// 			{
-	// 				if ( IsRecording )
-	// 				{
-	// 					StopRecord();
-	// 				}
-	// 				connectVideoSrc();
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			// disconnect video source
-	// 			//if(!window.stream && window.stream.active == false)
-	// 			if(IsDeviceConnected)
-	// 			{
-	// 				if ( IsRecording )
-	// 				{
-	// 					StopRecord();
-	// 				}
-
-	// 				IsDeviceConnected = false;
-	// 				disconnectVideoSrc();
-	// 			}
-	// 		}
-	// 	});
-	// });
-}
-
-var deviceChangeTimeoutID = null;
-
-navigator.mediaDevices.ondevicechange = async function (event) {
-	//console.log("on device chenge ", event);
-	//console.log(event.device);
-
-	if (deviceChangeTimeoutID != null) {
-		clearTimeout(deviceChangeTimeoutID);
-	}
-
-	deviceChangeTimeoutID = setTimeout(function () {
-		deviceChangeTimeoutID = null;
-		tryConnectDevice();
-	}, 2000);
-}
-
-function disconnectVideoSrc() {
-	//console.log(navigator.userAgentData.brands);
-
-	if (!!window.stream) {
-		//5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36
-		var appVersion = navigator.appVersion;
-
-		//var objOffsetVersion = appVersion.indexOf("Chrome");
-		//var chromeVersion = appVersion.substr(objOffsetVersion+7, 2);
-
-		var rgx = /Chrome\/(\d+)/i;
-		var match = appVersion.match(rgx);
-
-		if (match === null) {
-			window.stream.getVideoTracks()[0].stop();
-		}
-		else {
-			if (match[0] != null && match[1] <= 46) {
-				window.stream.stop();
-			}
-			else {
-				window.stream.getVideoTracks()[0].stop();
-			}
-		}
-	}
-}
-
-var successCallback = function (stream) {
-	currVideoSource = choseVideoSource;
-
-	window.stream = stream; // make stream available to console
-
-	//console.log(stream.getAudioTracks());
-	//console.log(stream.getVideoTracks());
-
-	if (!videoElement) {
-		videoElement = document.getElementById('videoSrc');
-		//console.log("successCallback get videoElement again");
-	}
-
-	//videoElement.src = window.URL.createObjectURL(stream);
-	stream.getAudioTracks()[0].enabled = false;
-
-	videoElement.srcObject = stream;
-	videoElement.load();
-
-	var playPromise = videoElement.play();
-	if (playPromise !== undefined) {
-		playPromise.then(_ => {
-
-			videoElement.muted = true;
-			videoElement.hidden = true;
-
-			IsDeviceConnected = true;
-		})
-			.catch(error => {
-				console.log(error);
-			});
-	}
-	// videoElement.muted = true;
-	// videoElement.load();
-	// videoElement.srcObject = stream;
-	// videoElement.play();
-	// videoElement.hidden = true;
-
-	//IsDeviceConnected = true;
-};
-
-var connectVideoSrc_Retry = 0
-
-var errorCallback = async function (error) {
-	//console.log("navigator.getUserMedia error: ", error);
-
-	if (connectVideoSrc_Retry > 0) {
-		connectVideoSrc_Retry -= 1;
-		var constraints = {
-			audio: true,
-			video: {
-				deviceId: choseVideoSource,
-				width: { min: videoW, max: videoW },
-				height: { min: videoH, max: videoH }
-			}
-		};
-		await navigator.mediaDevices.getUserMedia(constraints).then(successCallback).catch(errorCallback);
-	}
-};
-
-async function connectVideoSrc() {
-	if (!choseVideoSource)
-		return;
-
-	await disconnectVideoSrc();
-
-	//var videoSource = choseVideoSource;
-
-	//console.log("choseVideoSource : ", choseVideoSource);
-
-	// var constraints = {
-	// 	audio: true,
-	//     video: {
-	//         deviceId: videoSource,
-	//     }
-	// };
-
-	// var constraints = {
-	// 	audio: true,
-	//     video: {
-	//         deviceId: videoSource ? {exact: videoSource} : undefined,
-	//         width: {min: videoW, max: videoW},
-	// 		height: {min: videoH, max: videoH}
-	//     }
-	// };
-
-	var constraints = {
-		audio: true,
-		video: {
-			deviceId: choseVideoSource,
-			width: { min: videoW, max: videoW },
-			height: { min: videoH, max: videoH }
-		}
-	};
-
-	connectVideoSrc_Retry = 3;
-
-	await navigator.mediaDevices.getUserMedia(constraints).then(successCallback).catch(errorCallback);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
 // update stream frame 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -6515,10 +6183,10 @@ function intVideoStreamActiveCheck() {
 			(diff > 1000 &&
 				window.stream.active == false &&
 				chrome.WindowState == 'minimized')) {
-			connectVideoSrc();
+			//connectVideoSrc();
+			startVideo();
 		}
-	},
-		3000);
+	}, 3000);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -6667,329 +6335,6 @@ function sysUpdateToolBarTip() {
 
 	fcUpdateElementTitle("sys_fullPhoto", strId);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// record
-///////////////////////////////////////////////////////////////////////////////////////////
-
-var mediaRecorder;
-var recordedChunks = [];
-var IsRecording = false;
-var IsPause = false;
-var recordingStartTime;
-var recordingTotal;
-var recordingPauseTime;
-var OldImgW = 1280;
-var OldImgH = 720;
-var RECORD_LIMIT_SEC = 900;//600;
-
-function showRecordBtn(visible) {
-	showElement('bottomToolBarData', visible);
-	if (visible)
-		$("#btn_pause").hide();
-}
-
-function showAllToolBars(visible) {
-	var idTbl = [
-		"btn_setting",
-		"btn_capture",
-		"btn_freeze",
-		"btn_timesave",
-		"btn_mirrow",
-		"btn_flip",
-		//'btn_brightness',
-		//'btn_whitebalance',
-		"btn_config",
-		"btn_zoom",
-		"btn_importPic",
-		"btn_redo",
-		"btn_undo",
-
-		// "mode_about",       
-		// "mode_preview",     
-		// "mode_playback",    
-		// "mode_drawingBoard",
-
-		'btn_freehand',
-		'btn_arrow',
-		'btn_eraser',
-		'btn_line',
-		'btn_rectangleLine',
-		'btn_rectangle',
-		'btn_circleLine',
-		'btn_circle',
-		'btn_erase_all',
-		'btn_text',
-		// 'previewToolBar',
-		// 'drawingToolBar',
-		// 'modeToolBar',
-		'drawingCfgColorBar',
-		'drawingOpacity',
-		'drawingLineWidth'
-	];
-
-	var i;
-
-	for (i = 0; i < idTbl.length; i++) {
-		showToolBar(idTbl[i], visible);
-	}
-
-	if (visible) {
-		//document.getElementById("sysToolBar").style.opacity = appCfg.toolBarOpacityLeave;
-		document.getElementById("sysToolBar").style.background = appCfg.toolBarColorLeave;
-	}
-	else {
-		//document.getElementById("sysToolBar").style.opacity = '0';
-		document.getElementById("sysToolBar").style.backgroundColor = '#000';
-	}
-
-	//opacity: appCfg.toolBarOpacityLeave,
-}
-
-var recordStream;
-
-function StartRecord() {
-	if (!IsRecording)//(appFC.imgW != 1280 || appFC.imgH != 720)
-	{
-		IsRecording = true;
-
-		OldImgW = appFC.imgW;
-		OldImgH = appFC.imgH;
-
-		showRecordBtn(false);
-
-		showAllToolBars(false);
-		fcCloseActiveDlg();
-		$("#btn_pause").show();
-
-		fcChangeBaseImageSize(1280, 720);
-		setTimeout(StartRecord, 2500);
-		return;
-	}
-
-	IsPause = false;
-	// showAllToolBars(false);
-	// fcCloseActiveDlg();
-	// $("#btn_pause").show();	
-
-	// -- recording time stamp
-	document.getElementById("recordtime").style.fontSize = "18px";
-	document.getElementById("recordtime").style.fontWeight = "bold";
-	document.getElementById("recordtime").style.color = "red";
-	document.getElementById("recordtime").style.position = "absolute";
-	document.getElementById("recordtime").style.bottom = "35px";
-	document.getElementById("recordtime").style.right = (document.documentElement.clientWidth / 2 - 30) + "px";
-	document.getElementById("recordtime").style.visibility = "visible";
-	//recordingsec = 0;
-
-	var getd = new Date();
-	recordingStartTime = getd.getTime();
-	recordingPauseTime = 0;
-	RecordingTimer();
-
-	if (1) {
-		// record all canvas
-		var mc = previewModeCfg;
-		var canvas = mc['combineCanvas'];
-		//var canvas = document.querySelector("canvas");
-
-		recordStream = canvas.captureStream();
-
-		if (window.stream != undefined) {
-			window.stream.getAudioTracks()[0].enabled = true;
-			recordStream.addTrack(window.stream.getAudioTracks()[0]);
-		}
-	}
-	// else
-	// {
-	// 	window.stream.getAudioTracks()[0].enabled = true;
-	// 	recordStream = window.stream		
-	// }	
-
-	recordedChunks = [];
-
-	let mimeType;
-
-	if (MediaRecorder.isTypeSupported('video/mp4; codecs="avc1.42E01E, mp4a.40.2"')) {
-		mimeType = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
-	} else if (MediaRecorder.isTypeSupported('video/webm; codecs="vp8, vorbis"')) {
-		mimeType = 'video/webm; codecs="vp8, vorbis"';
-	}
-
-	var options = {
-		audioBitsPerSecond: 128000,
-		videoBitsPerSecond: 5000000,
-		mimeType: mimeType //'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
-	};
-
-	// var options = {  audioBitsPerSecond : 96000,
-	// 	videoBitsPerSecond : 256 * 8 * 1000,
-	// 	mimeType: 'video/webm;codecs=vp9; '};
-
-	// var options = {  audioBitsPerSecond : 96000,
-	// 	videoBitsPerSecond : 256 * 8 * 1000,
-	// 	mimeType: 'video/webm;codecs=vp8; '};
-
-	mediaRecorder = new MediaRecorder(recordStream, options);
-	mediaRecorder.ondataavailable = handleDataAvailable;
-	mediaRecorder.start();
-
-	showRecordBtn(true);
-
-	function handleDataAvailable(event) {
-		if (event.data && event.data.size > 0) {
-			recordedChunks.push(event.data);
-			//DownloadRecord();
-			SaveRecord();
-		} else {
-			console.log("no data");
-		}
-	}
-};
-
-async function StopRecord() {
-	IsRecording = false;
-	document.getElementById("recordtime").style.visibility = "hidden";
-	showAllToolBars(true);
-	$("#btn_pause").hide();
-	mediaRecorder.stop();
-
-	recordStream.getTracks().forEach(function (track) {
-		track.stop();
-		recordStream.removeTrack(track);
-	});
-
-	if (window.stream != undefined)
-		window.stream.getAudioTracks()[0].enabled = false;
-
-	var getd = new Date();
-	var recordingNow = getd.getTime();
-	if (IsPause) {
-		IsPause = false;
-		recordingTotal = recordingPauseTime;
-	}
-	else {
-		recordingTotal = recordingPauseTime + recordingNow - recordingStartTime;
-	}
-};
-
-function PauseRecord() {
-	IsPause = true;
-	//showAllToolBars(true);
-	mediaRecorder.pause();
-
-	var getd = new Date();
-	var recordingNow = getd.getTime();
-	recordingPauseTime += recordingNow - recordingStartTime;
-}
-
-function ResumeRecord() {
-	IsPause = false;
-	//showAllToolBars(false);
-	mediaRecorder.resume();
-
-	// set recording time
-	var getd = new Date();
-	recordingStartTime = getd.getTime();
-	RecordingTimer();
-}
-
-async function SaveRecord() {
-	var filename = fcGetFilenameByDateTime('mp4');
-	console.log("filename: " + filename);
-
-	const db = await openDatabase();
-	const transaction = db.transaction(storeName, 'readwrite');
-	const store = transaction.objectStore(storeName);
-	let blob = new Blob(recordedChunks, { type: 'video/mp4' });
-	const data = { name: filename, video: blob };
-	store.add(data);
-
-	recordedChunks = [];
-	blob = null;
-
-	if (OldImgW != 1280 || OldImgH != 720) {
-		fcChangeBaseImageSize(OldImgW, OldImgH);
-	}
-}
-
-function DownloadRecord() {
-	//console.log("Download Record");
-
-	let blob = new Blob(recordedChunks, {
-		type: 'video/webm'
-	});
-
-	//console.log(recordingTotal);
-
-	// var url = URL.createObjectURL(blob);
-	// var a = document.createElement('a');
-	// document.body.appendChild(a);
-
-	// var filename = new Date().toISOString().slice(0,19);
-	// a.style = 'display: none';
-	// a.href = url;
-	// a.download = filename + '.webm';
-	// a.click();
-	// window.URL.revokeObjectURL(url);
-	// recordedChunks = [];
-	// if (OldImgW != 1280 || OldImgH != 720)
-	// {
-	// 	fcChangeBaseImageSize(OldImgW, OldImgH);
-	// }
-
-	setTimeout(function () {
-		ysFixWebmDuration(blob, recordingTotal, function (fixedBlob) {
-			var url = URL.createObjectURL(fixedBlob);
-			var a = document.createElement('a');
-			document.body.appendChild(a);
-
-			var filename = new Date().toISOString().slice(0, 19);
-
-			a.style = 'display: none';
-			a.href = url;
-			a.download = filename + '.webm';
-			a.click();
-			window.URL.revokeObjectURL(url);
-
-			recordedChunks = [];
-
-			if (OldImgW != 1280 || OldImgH != 720) {
-				fcChangeBaseImageSize(OldImgW, OldImgH);
-			}
-		});
-	}, 100);
-};
-
-function padLeft(str, len) {
-	str = '' + str;
-	if (str.length >= len) {
-		return str;
-	} else {
-		return padLeft("0" + str, len);
-	}
-};
-
-function RecordingTimer() {
-	if (IsRecording && !IsPause) {
-		var getd = new Date();
-		var recordingNow = getd.getTime();
-		recordingTotal = recordingPauseTime + recordingNow - recordingStartTime;
-		var recordingsec = Math.floor((recordingTotal) / 1000);
-
-		if (recordingsec >= RECORD_LIMIT_SEC) {
-			StopRecord();
-			return;
-		}
-
-		document.getElementById("recordtime").innerText =
-			padLeft(Math.floor(recordingsec / 60), 2) + " : " + padLeft(recordingsec % 60, 2);
-
-		setTimeout(() => {
-			RecordingTimer()
-		}, 1000);
-	}
-};
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // mouse event
@@ -7235,7 +6580,8 @@ function modeToolBarOnClick(event) {
 			break;
 
 		case "mode_playback":
-			refleshGallery();
+			if (playbackModeCfg.curMode != PlbToolBarType.image)
+				refleshGallery();
 			fcSwitchMode(playbackModeCfg);
 			showRecordBtn(false);
 
@@ -8526,8 +7872,12 @@ async function previewToolBarOnClick(event) {
 		case "btn_record":
 			if (typeof window.stream == "undefined" ||
 				!window.stream.active ||
-				!IsDeviceConnected)
+				!IsDeviceConnected) {
+				console.log("window.stream", window.stream);
+				console.log("window.stream.active", window.stream.active);
+				console.log("IsDeviceConnected", IsDeviceConnected);
 				break;
+			}
 
 			if ($('#dialogSave').hasClass('ui-dialog-content') &&
 				$('#dialogSave').dialog('isOpen') === true)
@@ -9051,7 +8401,7 @@ function previewCheckReqVideoResolution() {
 // video resolution change control
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-function previewChangeBaseImageCtrl(state, w, h) {
+async function previewChangeBaseImageCtrl(state, w, h) {
 	var mc = previewModeCfg;
 
 	switch (state) {
@@ -9064,7 +8414,8 @@ function previewChangeBaseImageCtrl(state, w, h) {
 			mc.freeze = false;
 			toolBarSetElementState('previewToolBar', "btn_freeze", 0);
 
-			disconnectVideoSrc();
+			//disconnectVideoSrc();
+			await stopVideo();
 
 			videoW = mc.imgW = w;
 			videoH = mc.imgH = h;
@@ -9073,8 +8424,8 @@ function previewChangeBaseImageCtrl(state, w, h) {
 
 		case BaseImgChg.after:
 
-			connectVideoSrc();
-
+			//connectVideoSrc();
+			await startVideo();
 			break;
 	}
 }
@@ -9926,7 +9277,7 @@ function Perspective_Image() {
 function dataURItoBlob(dataURI) {
 	// convert base64/URLEncoded data component to raw binary data held in a string
 	var byteString;
-	if (dataURI.split(',')[0].indexOf('base64') >= 0)
+	if (dataURI.split(',')[0].indexOf('base64') != -1)
 		byteString = atob(dataURI.split(',')[1]);
 	else
 		byteString = unescape(dataURI.split(',')[1]);
@@ -10714,6 +10065,9 @@ var appFC =
 
 	idVideoResolutionList: 0,
 
+	curAudioinputList: 0,
+	idAudioinputSelect: 0,
+
 	checkVideoResolution: false,
 };
 
@@ -10812,6 +10166,7 @@ function fcUpdateImage() {
 	var cm = appFC.curMode;
 
 
+	//imageDisplayContext.drawImage(cm.combineCanvas, 0, 0, cm.imgW, cm.imgH, 0, 0, 1920, 1080);
 	imageDisplayContext.drawImage(cm.combineCanvas, 0, 0, cm.imgW, cm.imgH, 0, 0, dispW, dispH);
 }
 
@@ -11765,9 +11120,9 @@ function fcUpdateSysInfoWin() {
 		//obj.style.width = '60px';
 	}
 
-	obj = document.getElementById("recordtime");
-	if (obj && IsRecording)
-		obj.style.right = (document.documentElement.clientWidth / 2 - 30) + "px";
+	// obj = document.getElementById("recordtime");
+	// if (obj && IsRecording)
+	// 	obj.style.right = (document.documentElement.clientWidth / 2 - 30) + "px";
 }
 
 function fcInitSysInfoWin() {
@@ -12091,6 +11446,7 @@ function fcUpdateVideoResolution() {
 		appFC.reqVideoResolutionList = false;
 
 		updateVideoResolutionElement(appFC.curVideoResolutionList);
+		//updateAudioinputElement();
 		eleId = document.getElementById('sdVideoRsoScrollbar');
 		idx = eleId.selectedIndex;
 
@@ -12304,6 +11660,15 @@ window.onload = async function () {
 
 	fcInit();
 
+	try {
+		initializeDevices();
+		//await tryConnectDevice();
+		//connectVideoSrc();
+	}
+	catch (e) {
+
+	}
+
 	previewModeCfg.init();
 	playbackModeCfg.init();
 	drawingBoardModeCfg.init();
@@ -12312,16 +11677,17 @@ window.onload = async function () {
 
 	fcSwitchMode(previewModeCfg);
 
-	try {
-		await tryConnectDevice();
-		//connectVideoSrc();
-	}
-	catch (e) {
+	// try {
+	// 	initializeDevices();
+	// 	//await tryConnectDevice();
+	// 	//connectVideoSrc();
+	// }
+	// catch (e) {
 
-	}
+	// }
 
 	updateVideoStreamFrame();
-	intVideoStreamActiveCheck();
+	//intVideoStreamActiveCheck();
 
 	updateTranslatedString();
 };
@@ -12526,7 +11892,7 @@ async function refleshGallery() {
 
 	request.onsuccess = event => {
 		const images = event.target.result;
-		if (images.length > 0) {
+		if (images.length >= 0) {
 			console.log(images);
 			galleryData = images;
 			galleryFillThumbnailDiv_Page();
@@ -12537,27 +11903,20 @@ async function refleshGallery() {
 }
 
 function galleryFillThumbnailDiv_Page() {
-	//console.log("galleryFillThumbnailDiv_Page");
 	appFC.thumbSelectedFileCnt = 0;
 	appFC.thumbnailCnt = 0;
 	appFC.thumbFileCnt = 0;
-	$('#thumbDiv').empty();
-	playbackShowThumbnail(false);
 
+	playbackShowThumbnail(false);
+	$('#thumbDiv').empty();
 
 	var ValidEntry = galleryData.length;
 
 	appFC.thumbnailTotalPage = parseInt((ValidEntry - 1) / 100) + 1;
-
-	// set limit for CurrPage, Index is ZERO-Base
 	appFC.thumbnailCurrPage = Math.min(appFC.thumbnailCurrPage, appFC.thumbnailTotalPage - 1);
-
-	//console.log(appFC.thumbnailCurrPage, appFC.thumbnailTotalPage);
 
 	var startIndex = 100 * appFC.thumbnailCurrPage;
 	var endIndex = Math.min(startIndex + 100, ValidEntry);
-
-	ValidEntry = 0;
 
 	for (var i = startIndex; i < endIndex; i++) {
 		if (galleryData[i].name.indexOf(".jpg") > 0) {
@@ -12565,7 +11924,8 @@ function galleryFillThumbnailDiv_Page() {
 			galleryCreateThumbnailDivEx(galleryData[i], i);
 		}
 
-		if (galleryData[i].name.indexOf(".mp4") > 0) {
+		if (galleryData[i].name.indexOf(".mp4") > 0 ||
+			galleryData[i].name.indexOf(".webm") > 0) {
 			galleryCreateVideoDiv(galleryData[i], i);
 		}
 	}
@@ -12750,14 +12110,13 @@ function galleryCreateVideoDiv(data, no, insertFirst = false) {
 	$(eleId).addClass('thumbImg');
 
 	eleId = document.getElementById(imgId);
-	eleId.src = URL.createObjectURL(data.video);
+	eleId.src = URL.createObjectURL(data.video); //data.video;
 
 	eleId.autoplay = false;
 	eleId.controls = false;
 	eleId.loop = false;
 
 	eleId.fileName = data.name;
-	//eleId.fileEntryOrg = entry;
 	eleId.checked = false;
 
 	css =
@@ -13004,3 +12363,581 @@ function galleryDeleteFiles(eleId) {
 
 	refleshGallery();
 }
+///////////////////////////////////////////////////////////////////////////////////////////
+// record
+///////////////////////////////////////////////////////////////////////////////////////////
+
+var mediaRecorder;
+var recordedChunks = [];
+var IsRecording = false;
+var IsPause = false;
+var recordingStartTime;
+var recordingTotal;
+var recordingPauseTime;
+var OldImgW = 1280;
+var OldImgH = 720;
+var RECORD_LIMIT_SEC = 900;//600;
+
+function showRecordBtn(visible) {
+    showElement('bottomToolBarData', visible);
+    if (visible)
+        $("#btn_pause").hide();
+}
+
+function showAllToolBars(visible) {
+    var idTbl = [
+        "btn_setting",
+        "btn_capture",
+        "btn_freeze",
+        "btn_timesave",
+        "btn_mirrow",
+        "btn_flip",
+        //'btn_brightness',
+        //'btn_whitebalance',
+        "btn_config",
+        "btn_zoom",
+        "btn_importPic",
+        "btn_redo",
+        "btn_undo",
+
+        // "mode_about",       
+        // "mode_preview",     
+        // "mode_playback",    
+        // "mode_drawingBoard",
+
+        'btn_freehand',
+        'btn_arrow',
+        'btn_eraser',
+        'btn_line',
+        'btn_rectangleLine',
+        'btn_rectangle',
+        'btn_circleLine',
+        'btn_circle',
+        'btn_erase_all',
+        'btn_text',
+        // 'previewToolBar',
+        // 'drawingToolBar',
+        // 'modeToolBar',
+        'drawingCfgColorBar',
+        'drawingOpacity',
+        'drawingLineWidth'
+    ];
+
+    var i;
+
+    for (i = 0; i < idTbl.length; i++) {
+        showToolBar(idTbl[i], visible);
+    }
+
+    if (visible) {
+        //document.getElementById("sysToolBar").style.opacity = appCfg.toolBarOpacityLeave;
+        document.getElementById("sysToolBar").style.background = appCfg.toolBarColorLeave;
+    }
+    else {
+        //document.getElementById("sysToolBar").style.opacity = '0';
+        document.getElementById("sysToolBar").style.backgroundColor = '#000';
+    }
+
+    //opacity: appCfg.toolBarOpacityLeave,
+}
+
+var recordStream;
+var recordingFormat;
+var previewStream;
+
+async function StartRecord() {
+    console.log("Start Recording");
+    if (!IsRecording)//(appFC.imgW != 1280 || appFC.imgH != 720)
+    {
+        IsRecording = true;
+
+        OldImgW = appFC.imgW;
+        OldImgH = appFC.imgH;
+
+        showRecordBtn(false);
+
+        showAllToolBars(false);
+        fcCloseActiveDlg();
+        $("#btn_pause").show();
+
+        fcChangeBaseImageSize(1280, 720);
+        setTimeout(StartRecord, 2500);
+        return;
+    }
+
+    IsPause = false;
+    // showAllToolBars(false);
+    // fcCloseActiveDlg();
+    // $("#btn_pause").show();	
+
+    // -- recording time stamp
+    document.getElementById("recordtime").style.fontSize = "18px";
+    document.getElementById("recordtime").style.fontWeight = "bold";
+    document.getElementById("recordtime").style.color = "red";
+    document.getElementById("recordtime").style.position = "absolute";
+    document.getElementById("recordtime").style.bottom = "35px";
+    document.getElementById("recordtime").style.right = 50 + "px"; //(document.documentElement.clientWidth / 2 - 30) + "px";
+    document.getElementById("recordtime").style.visibility = "visible";
+    //recordingsec = 0;
+
+    var getd = new Date();
+    recordingStartTime = getd.getTime();
+    recordingPauseTime = 0;
+    RecordingTimer();
+
+
+    // record all canvas
+    var mc = previewModeCfg;
+    var canvas = mc['combineCanvas'];
+    //var canvas = document.querySelector("canvas");
+
+    var selectedDeviceId = document.getElementById('sdAudioinputScrollbar').value;
+    console.log(selectedDeviceId);
+    const audioStream = await navigator.mediaDevices.getUserMedia({
+        audio: { deviceId: { exact: selectedDeviceId } }
+    });
+
+    recordStream = canvas.captureStream();
+    audioStream.getAudioTracks().forEach(track => recordStream.addTrack(track));
+
+    console.log(window.stream.getAudioTracks());
+
+    previewStream = window.stream;
+    window.stream = recordStream;
+    // recordStream = canvas.captureStream();
+    // if (window.stream != undefined) {
+    // 	window.stream.getAudioTracks()[0].enabled = true;
+    // 	recordStream.addTrack(window.stream.getAudioTracks()[0]);
+    // }
+
+
+    recordedChunks = [];
+
+    let mimeType;
+
+    if (MediaRecorder.isTypeSupported('video/mp4; codecs="avc1.42E01E, mp4a.40.2"')) {
+        console.log("using video/mp4; codecs=avc1.42E01E, mp4a.40.2");
+        mimeType = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
+        recordingFormat = 'mp4';
+    } else if (MediaRecorder.isTypeSupported('video/webm; codecs="vp9, opus"')) {
+        console.log("using webm vp9 opus");
+        mimeType = 'video/webm; codecs="vp9, opus"';
+        recordingFormat = 'webm';
+    } else if (MediaRecorder.isTypeSupported('video/webm; codecs="vp8, vorbis"')) {
+        console.log("using webm vp8 vorbis");
+        mimeType = 'video/webm; codecs="vp8, vorbis"';
+        recordingFormat = 'webm';
+    } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+        console.log("using mp4");
+        mimeType = 'video/mp4';
+        recordingFormat = 'mp4';
+    } else if (MediaRecorder.isTypeSupported('video/webm')) {
+        console.log("using webm");
+        mimeType = 'video/webm';
+        recordingFormat = 'webm';
+    }
+
+    var options = {
+        audioBitsPerSecond: 128000,
+        videoBitsPerSecond: 5000000,
+        mimeType: mimeType //'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+    };
+
+    // var options = {  audioBitsPerSecond : 96000,
+    // 	videoBitsPerSecond : 256 * 8 * 1000,
+    // 	mimeType: 'video/webm;codecs=vp9; '};
+
+    // var options = {  audioBitsPerSecond : 96000,
+    // 	videoBitsPerSecond : 256 * 8 * 1000,
+    // 	mimeType: 'video/webm;codecs=vp8; '};
+
+    mediaRecorder = new MediaRecorder(recordStream, options);
+    mediaRecorder.ondataavailable = handleDataAvailable;
+    mediaRecorder.start();
+
+    showRecordBtn(true);
+
+    function handleDataAvailable(event) {
+        if (event.data && event.data.size > 0) {
+            recordedChunks.push(event.data);
+            //DownloadRecord();
+            SaveRecord();
+        } else {
+            console.log("no data");
+        }
+    }
+};
+
+async function StopRecord() {
+    IsRecording = false;
+    document.getElementById("recordtime").style.visibility = "hidden";
+    showAllToolBars(true);
+    $("#btn_pause").hide();
+    mediaRecorder.stop();
+
+    recordStream.getTracks().forEach(function (track) {
+        track.stop();
+        recordStream.removeTrack(track);
+    });
+
+    // if (window.stream != undefined)
+    // 	window.stream.getAudioTracks()[0].enabled = false;
+
+    window.stream = previewStream;
+
+    var getd = new Date();
+    var recordingNow = getd.getTime();
+    if (IsPause) {
+        IsPause = false;
+        recordingTotal = recordingPauseTime;
+    }
+    else {
+        recordingTotal = recordingPauseTime + recordingNow - recordingStartTime;
+    }
+};
+
+function PauseRecord() {
+    IsPause = true;
+    //showAllToolBars(true);
+    mediaRecorder.pause();
+
+    var getd = new Date();
+    var recordingNow = getd.getTime();
+    recordingPauseTime += recordingNow - recordingStartTime;
+}
+
+function ResumeRecord() {
+    IsPause = false;
+    //showAllToolBars(false);
+    mediaRecorder.resume();
+
+    // set recording time
+    var getd = new Date();
+    recordingStartTime = getd.getTime();
+    RecordingTimer();
+}
+
+async function SaveRecord() {
+    var filename = fcGetFilenameByDateTime(recordingFormat);
+    console.log("recordingFormat: " + recordingFormat);
+    console.log("filename: " + filename);
+
+    if (recordingFormat == 'mp4') {
+        const db = await openDatabase();
+        const transaction = db.transaction(storeName, 'readwrite');
+        const store = transaction.objectStore(storeName);
+        let blob = new Blob(recordedChunks, { type: 'video/mp4' });
+        const data = { name: filename, video: blob };
+        store.add(data);
+        recordedChunks = [];
+        blob = null;
+    }
+    else if (recordingFormat == 'webm') {
+
+        let blob = new Blob(recordedChunks, { type: 'video/webm' });
+
+        setTimeout(function () {
+            ysFixWebmDuration(blob, recordingTotal, async function (fixedBlob) {
+                const db = await openDatabase();
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const data = { name: filename, video: URL.createObjectURL(fixedBlob) };
+                store.add(data);
+                recordedChunks = [];
+                blob = null;
+            });
+        }, 100);
+    }
+
+    if (OldImgW != 1280 || OldImgH != 720) {
+        fcChangeBaseImageSize(OldImgW, OldImgH);
+    }
+}
+
+function DownloadRecord() {
+    //console.log("Download Record");
+
+    let blob = new Blob(recordedChunks, {
+        type: 'video/webm'
+    });
+
+    //console.log(recordingTotal);
+
+    // var url = URL.createObjectURL(blob);
+    // var a = document.createElement('a');
+    // document.body.appendChild(a);
+
+    // var filename = new Date().toISOString().slice(0,19);
+    // a.style = 'display: none';
+    // a.href = url;
+    // a.download = filename + '.webm';
+    // a.click();
+    // window.URL.revokeObjectURL(url);
+    // recordedChunks = [];
+    // if (OldImgW != 1280 || OldImgH != 720)
+    // {
+    // 	fcChangeBaseImageSize(OldImgW, OldImgH);
+    // }
+
+    setTimeout(function () {
+        ysFixWebmDuration(blob, recordingTotal, function (fixedBlob) {
+            var url = URL.createObjectURL(fixedBlob);
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+
+            var filename = new Date().toISOString().slice(0, 19);
+
+            a.style = 'display: none';
+            a.href = url;
+            a.download = filename + '.webm';
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            recordedChunks = [];
+
+            if (OldImgW != 1280 || OldImgH != 720) {
+                fcChangeBaseImageSize(OldImgW, OldImgH);
+            }
+        });
+    }, 100);
+};
+
+function padLeft(str, len) {
+    str = '' + str;
+    if (str.length >= len) {
+        return str;
+    } else {
+        return padLeft("0" + str, len);
+    }
+};
+
+function RecordingTimer() {
+    if (IsRecording && !IsPause) {
+        var getd = new Date();
+        var recordingNow = getd.getTime();
+        recordingTotal = recordingPauseTime + recordingNow - recordingStartTime;
+        var recordingsec = Math.floor((recordingTotal) / 1000);
+
+        if (recordingsec >= RECORD_LIMIT_SEC) {
+            StopRecord();
+            return;
+        }
+
+        document.getElementById("recordtime").innerText =
+            padLeft(Math.floor(recordingsec / 60), 2) + " : " + padLeft(recordingsec % 60, 2);
+
+        setTimeout(() => {
+            RecordingTimer()
+        }, 1000);
+    }
+};///////////////////////////////////////////////////////////////////////////////////////////
+// constant 
+///////////////////////////////////////////////////////////////////////////////////////////
+
+var choseVideoSource = '';
+var currVideoSource = '';
+
+// var videoW = 1024;	//appCfg.defPreviewRsoX;
+// var videoH = 768;	//appCfg.defPreviewRsoY;
+
+var videoW = 1280;	//appCfg.defPreviewRsoX;
+var videoH = 720;	//appCfg.defPreviewRsoY;
+
+var videoElement = document.getElementById('videoSrc');
+var videoLastUpdateTime;
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// check device 
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function isSupportedDevice(vid, pid) {
+    for (var i = 0; i < DevList.length; i++) {
+        if (vid === DevList[i][0] && pid === DevList[i][1]) {
+            appFC.reqVideoResolutionList = DevList[i][2];
+            return true;
+        }
+    }
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// connect stream 
+///////////////////////////////////////////////////////////////////////////////////////////
+var IsDeviceConnected = false;
+
+// 請求權限並顯示裝置選項
+async function initializeDevices() {
+    try {
+        // 請求權限
+        await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        await updateVideoDevices();
+        await startVideo();
+    } catch (error) {
+        alert("請允許使用相機和麥克風的權限");
+    }
+}
+
+var supportedDevice = false;
+
+// 更新影片裝置
+async function updateVideoDevices() {
+    try {
+        console.log("updateVideoDevice");
+
+        const audioSelect = document.getElementById(appFC.idAudioinputSelect);
+
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        audioSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
+
+        var tmpDeviceId = null;
+        var defaultAudioDeviceId = null;
+
+        console.log(devices);
+        supportedDevice = false;
+
+        devices.forEach(device => {
+            if (device.kind === 'videoinput' && !supportedDevice) {
+                var getVendorID = parseInt("0x" + device.label.split(":")[0].split("(")[1], 16);
+                var getProductID = parseInt("0x" + device.label.split(")")[0].split(":")[1], 16);
+
+                // console.log("VID_PID =", getVendorID.toString(16), " _ ", getProductID.toString(16));
+
+                if (tmpDeviceId == null) {
+                    console.log("set default camera");
+                    tmpDeviceId = device.deviceId;
+                }
+
+                if (true === isSupportedDevice(getVendorID, getProductID)) {
+                    console.log("find DC with VID_PID");
+                    //fcUpdateVideoResolution();
+                    supportedDevice = true;
+                    tmpDeviceId = device.deviceId;
+                } else if (device.label == 'Document Camera') {
+                    console.log("find DC");
+                    appFC.reqVideoResolutionList = DevList[0][2];
+                    //fcUpdateVideoResolution();
+                    supportedDevice = true;
+                    tmpDeviceId = device.deviceId;
+                }
+            }
+
+            if (device.kind === 'audioinput') {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.textContent = device.label || `未命名裝置 (${device.deviceId})`;
+                audioSelect.appendChild(option);
+
+                if (device.label.indexOf("Document Camera") != -1) {
+                    defaultAudioDeviceId = device.deviceId;
+                }
+            }
+        });
+
+
+        if (!supportedDevice) {
+            appFC.reqVideoResolutionList = DevList[0][2];
+        }
+        await fcUpdateVideoResolution();
+        choseVideoSource = tmpDeviceId;
+
+        if (defaultAudioDeviceId) {
+            console.log("select Document Camera Mic");
+            audioSelect.value = defaultAudioDeviceId;
+
+        }
+    } catch (error) {
+        console.error("無法列出影片裝置:", error);
+    }
+}
+
+// 選擇並顯示選定的影像流
+async function startVideo() {
+    console.log("startVideo", supportedDevice);
+
+    const audioSelect = document.getElementById(appFC.idAudioinputSelect);
+    var constraints;
+
+    if (supportedDevice) {
+        constraints = {
+            audio: { deviceId: { exact: audioSelect.value } },
+            video: {
+                deviceId: { exact: choseVideoSource },
+
+                width: { ideal: appFC.reqImgW, max: appFC.reqImgW },
+                height: { ideal: appFC.reqImgH, max: appFC.reqImgH }
+
+                // width: { min: appFC.reqImgW, max: appFC.reqImgW },
+                // height: { min: appFC.reqImgH, max: appFC.reqImgH }
+
+                // width: { min: videoW, max: videoW },
+                // height: { min: videoH, max: videoH }
+            }
+            //video: { deviceId: { exact: choseVideoSource } }
+        }
+    }
+    else {
+        constraints = {
+            audio: { deviceId: { exact: audioSelect.value } },
+            video: { deviceId: { exact: choseVideoSource } }
+        }
+    };
+
+    console.log(constraints);
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        console.log(stream);
+
+        currVideoSource = choseVideoSource;
+
+        window.stream = stream; // make stream available to console
+
+        // if (!videoElement) {
+        //     videoElement = document.getElementById('videoSrc');
+        // }
+
+        //videoElement.src = window.URL.createObjectURL(stream);
+        stream.getAudioTracks()[0].enabled = false;
+        const videoTrack = stream.getVideoTracks()[0];
+        // const capabilities = videoTrack.getCapabilities();
+        // console.log(capabilities);
+
+        videoElement.srcObject = stream;
+        await videoElement.load();
+
+        var playPromise = videoElement.play();
+        ///console.log(playPromise);
+        if (playPromise !== undefined) {
+            await playPromise.then(_ => {
+
+                videoElement.muted = true;
+                videoElement.hidden = true;
+
+                IsDeviceConnected = true;
+            })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+        //videoElement.srcObject = stream;
+    } catch (error) {
+        console.error("無法顯示影像流:", error);
+        //alert("無法取得所選影片裝置的影像流");
+    }
+};
+
+async function stopVideo() {
+    console.log("stopVideo", window.stream);
+    if (window.stream)
+        window.stream.getVideoTracks()[0].stop();
+    //window.stream.stop();
+    IsDeviceConnected = false;
+}
+
+navigator.mediaDevices.addEventListener('devicechange', async () => {
+    console.log("偵測到裝置變更，重新列出影片裝置...");
+    await updateVideoDevices();
+    await startVideo();
+});
