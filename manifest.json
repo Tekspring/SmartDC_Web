@@ -25,7 +25,7 @@
    "offline_enabled": true,
    "permissions": [ "tabs", "storage", "notifications", "unlimitedStorage"],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.24.1101",
+   "version": "1.24.1104",
    "externally_connectable": { 
       "ids": ["*"] 
    }
