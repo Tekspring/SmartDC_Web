@@ -12909,30 +12909,16 @@ async function initializeDevices() {
     try {
         // 請求權限
         // 必須設定寬高，否則 windows chrome 第一次會無法開啟畫面
-        var con = {
-            audio: true,
-            video: {
-                width: { ideal: videoW, max: videoW },
-                height: { ideal: videoH, max: videoH }
-            }
-        };
+        // var con = {
+        //     audio: true,
+        //     video: {
+        //         width: { ideal: videoW, max: videoW },
+        //         height: { ideal: videoH, max: videoH }
+        //     }
+        // };
 
-        navigator.mediaDevices.getUserMedia(con)
-            .then((stream) => {
-                console.log('已取得媒體流', stream);
-            })
-            .catch((error) => {
-                console.error('取得媒體流時發生錯誤', error);
-            });
-
-        // console.log("initializeDevices ... 0");
-        // await navigator.mediaDevices.getUserMedia(con);
-        // await navigator.mediaDevices.enumerateDevices().then(devices => {
-        //     console.log('可用裝置列表:', devices);
-        // });
-
-        console.log("initializeDevices ... 1");
-        //await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        //await navigator.mediaDevices.getUserMedia(con);
         await updateVideoDevices();
         await startVideo();
     } catch (error) {
