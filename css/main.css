@@ -174,5 +174,17 @@ html, body{
     height:10px;
   }
 
+.scrollable {
+    overflow-y: auto; /* 垂直滾動條 */
+    /* overflow-x: auto; 垂直滾動條 */
+    max-height: 100vh; /* 最大高度設為視窗高度 */
+    /* max-width: 60vh; 最大高度設為視窗高度 */
+    scrollbar-width: thin; /* Firefox 設定滾動條寬度 */
+    scrollbar-color: transparent transparent; /* 隱藏滾動條的顏色 */
+}
 
+.scrollable::-webkit-scrollbar {
+        width: 0; /* 隱藏滾動條寬度 */
+        height: 0; /* 隱藏橫向滾動條 */
+}
 
