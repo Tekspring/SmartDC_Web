@@ -2883,12 +2883,12 @@ var aboutContent =
 	'<center><img src="css/images/icon/logo 60.png"></img></center>' +
 	'<label><font size="5" color="#FAFAFA"><center>Documate</center></font></label>' +
 	'<BR>' +
-	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0120</center></font></label>' +
+	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0121</center></font></label>' +
 	'<BR>' +
 	'<div id="companyLink" align="center"><font size="2" color="#88F">Official site : www.inswan.com</font></div>' +
 	'<div id="manualLink" align="center"><font size="2" color="#88F">Email : service@inswan.com</font></div>' +
 	'<BR>' +
-	'<font size="2" color="#FAFAFA"><center>Inswan Copyright  ©  2024. All rights reserved.</center></font>';
+	'<font size="2" color="#FAFAFA"><center>Inswan Copyright  ©  2025. All rights reserved.</center></font>';
 
 function preInitAboutDlg() {
 	appCfg.aboutWinW = 400;
@@ -3874,7 +3874,7 @@ function initSettingDlg() {
 	var totalW, totalH;
 	var curX, curY;
 
-	var noSettingLine = 5;
+	var noSettingLine = 3; //5; disable resolution
 
 	if (1 === appCfg.disableDrawTextSetting) {
 		noSettingLine = 1;
@@ -3900,16 +3900,16 @@ function initSettingDlg() {
 	// $('#sdClsoeIcon').on('click', previewSetttingDlgCloseClick);
 
 	// video resolution icon
-	curY = + appCfg.sdIconH;
-	curX = appCfg.sdFrameGapX;
-	createSettingDlgIcon('settingDlg', 'sdVideoRsoIcon', 'setting_reslution.png', curX, curY);
+	// curY = + appCfg.sdIconH;
+	// curX = appCfg.sdFrameGapX;
+	// createSettingDlgIcon('settingDlg', 'sdVideoRsoIcon', 'setting_reslution.png', curX, curY);
 
 	// video resolution scroll bar
-	curX += (appCfg.sdIconW + appCfg.sdIconScrollGap);
-	createVideoResolutionScrollBar('settingDlg', 'sdVideoRsoScrollbar', appFC.curVideoResolutionList, curX, curY, appCfg.sdVideoRsoW);
+	// curX += (appCfg.sdIconW + appCfg.sdIconScrollGap);
+	// createVideoResolutionScrollBar('settingDlg', 'sdVideoRsoScrollbar', appFC.curVideoResolutionList, curX, curY, appCfg.sdVideoRsoW);
 
 	// video selector icon
-	curY += (appCfg.sdIconH + appCfg.sdGroupGap);
+	// curY += (appCfg.sdIconH + appCfg.sdGroupGap);
 	curX = appCfg.sdFrameGapX;
 	createSettingDlgIcon('settingDlg', 'sdVideoinputIcon', 'setting_videoinput.png', curX, curY);
 
@@ -7199,7 +7199,7 @@ function previewModeTaskCtrl(isEnter) {
 }
 
 function previewModeStart() {
-	previewCheckReqVideoResolution();
+	//previewCheckReqVideoResolution();
 
 	previewModeOnResize();
 }
@@ -7308,10 +7308,12 @@ async function previewToolBarOnClick(event) {
 			break;
 
 		case "btn_setting":
+			//testDeviceAvailability(CurrentVideoDevice); break;
 			fcToogleDlg("btn_setting", previewSettingDlgOpen, previewSettingDlgClose);
 			break;
 
 		case "btn_capture":
+			//LogDeviceList(); break;
 			if (typeof window.stream == "undefined" ||
 				!window.stream.active ||
 				!IsDeviceConnected)
@@ -7853,7 +7855,7 @@ function previewSettingDlgClose() {
 
 	checkVideoSource();
 
-	previewCheckReqVideoResolution();
+	//previewCheckReqVideoResolution();
 
 	updateTranslatedString();
 }
@@ -10974,6 +10976,9 @@ function fcInitCropWinEvent() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 function fcUpdateVideoResolution() {
+
+	return;
+
 	let eleId;
 	let idx;
 
@@ -13132,18 +13137,23 @@ async function selectVideoDefaultDevice(devices) {
     let device = null;
 
     const videoDevices = devices
-        .filter(device => device.kind === "videoinput");
+        .filter(device =>
+            device.kind === "videoinput" &&
+            device.label.indexOf('visual') == -1 &&
+            device.label.indexOf('Basler') == -1);
 
     for (let i = 0; i < videoDevices.length; i++) {
         if (i == 0) {
             device = videoDevices[0];
         }
 
-        if (videoDevices[i].label.indexOf('Document Camera') != -1) {
+        if (checkDC(videoDevices[i])) {
             device = videoDevices[i];
             break;
         }
     }
+
+    //console.log("Select Video Device", device);
 
     return device;
 }
@@ -13159,7 +13169,7 @@ async function selectAudioDefaultDevice(devices) {
             device = audioDevices[0];
         }
 
-        if (audioDevices[i].label.indexOf('Document Camera') != -1) {
+        if (checkDC(audioDevices[i])) {
             device = audioDevices[i];
             break;
         }
@@ -13181,12 +13191,16 @@ async function initializeDevices() {
             const videoSelect = document.getElementById(appFC.idVideoinputSelect);
             const audioSelect = document.getElementById(appFC.idAudioinputSelect);
 
-            videoSelect.value = CurrentVideoDevice.deviceId;
-            audioSelect.value = CurrentAudioDevice.deviceId;
+            if (CurrentVideoDevice)
+                videoSelect.value = CurrentVideoDevice.deviceId;
+            if (CurrentAudioDevice)
+                audioSelect.value = CurrentAudioDevice.deviceId;
 
             if (CurrentVideoDevice) {
                 await startVideo();
                 return;
+            } else {
+                setRecordBottonImg(false);
             }
         }
     } catch (error) {
@@ -13231,6 +13245,7 @@ async function checkVideoSource() {
 
     if (currVideoSource != videoSelect.value) {
         choseVideoSource = videoSelect.value;
+        CurrentVideoDevice.deviceId = videoSelect.value;
 
         //const videoOption = videoSelect.options[videoSelect.selectedIndex];
 
@@ -13244,7 +13259,7 @@ function setRecordBottonImg(enable) {
         $('#btn_record').hover(toolBarOnMouseEnter, toolBarOnMouseLeave);
         $('#btn_record').css('background-image', "url('css/images/icon/record2.png')");
     } else {
-        $('#btn_record').off('mouseenter mouseleave');
+        $('#btn_record').off('mouseenter mouseleave click');
         $('#btn_record').css('background-image', "url('css/images/icon/record3.png')");
     }
 }
@@ -13253,12 +13268,11 @@ let isMouseOverDisabled = false;
 
 async function getConstraints() {
 
-    if (!CurrentAudioDevice)
-        return null;
+    let constraints = null;
 
-    let constraints;
+    if (!CurrentVideoDevice) return null;
 
-    if (CurrentVideoDevice.label.indexOf('Document Camera') > -1) {
+    if (checkDC(CurrentVideoDevice)) {
         videoW = 1920;
         videoH = 1080;
 
@@ -13313,6 +13327,10 @@ async function getConstraints() {
     return constraints;
 }
 
+//navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange);
+const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 1000);
+navigator.mediaDevices.addEventListener('devicechange', debouncedDeviceChangeHandler);
+
 async function handleDeviceChange() {
 
     if (IsDeviceConnected) {
@@ -13326,7 +13344,7 @@ async function handleDeviceChange() {
 
             await stopVideo();
             cleanDisplayCanvas();
-            await delay(500);
+            //await delay(500);
         }
     }
 
@@ -13347,45 +13365,62 @@ async function handleDeviceChange() {
 
     // Video
     let reqChangeVideoDevice = false;
-    const plugVideo = extra.find(dev => dev.kind == 'videoinput');
-    const unplugVideo = missing.find(dev => dev.kind == 'videoinput');
+    const plugVideo = extra.filter(dev => dev.kind == 'videoinput');
+    const unplugVideo = missing.filter(dev => dev.kind == 'videoinput');
 
-    if (plugVideo) console.log("plugVideo", plugVideo);
-    if (unplugVideo) console.log("unplugVideo", unplugVideo);
+    if (plugVideo.length > 0) console.log("plugVideo", plugVideo);
+    if (unplugVideo.length > 0) console.log("unplugVideo", unplugVideo);
 
-    if (plugVideo) {
+    if (plugVideo.length > 0) {
+
         if (CurrentVideoDevice == null) {
-            CurrentVideoDevice = plugVideo;
+            // 原本無 video device
+            CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
+            //CurrentVideoDevice = plugVideo[0];
             reqChangeVideoDevice = true;
+
         } else if (checkDC(plugVideo)) {
-            CurrentVideoDevice = plugVideo;
+            // 原本存在 video device，插入 DC
+            console.log("Plug DC");
+            CurrentVideoDevice = plugVideo[0];
             reqChangeVideoDevice = true;
         } else {
+            // 原本存在 video device，插入非 DC
             // do nothing
         }
     }
 
-    if (unplugVideo) {
-        if (unplugVideo.deviceId == CurrentVideoDevice.deviceId) {
+    if (unplugVideo.length > 0) {
+        // unplug current video device
+        if (unplugVideo.some(dev => dev.deviceId == CurrentVideoDevice.deviceId)) {
+
             console.log("unplug current video device");
+
             CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
 
             if (CurrentVideoDevice) {
                 videoSelect.value = CurrentVideoDevice.deviceId;
+                reqChangeVideoDevice = true;
             } else {
                 videoSelect.value = null;
             }
-
-            reqChangeVideoDevice = true;
+        } else {
+            videoSelect.value = CurrentVideoDevice.deviceId;
         }
     }
 
-
     // Audio
-    if (missing.some(dev => dev.kind == 'audioinput') ||
-        extra.some(dev => dev.kind == 'audioinput')) {
+    const plugAudio = extra.filter(dev => dev.kind == 'audioinput');
+    const unplugAudio = missing.filter(dev => dev.kind == 'audioinput');
 
-        console.log("reset default audio input");
+    if (plugAudio.length > 0) {
+        if (CurrentAudioDevice == null) {
+            audioSelect.value = plugAudio.deviceId;
+            CurrentAudioDevice = plugAudio[0];
+        }
+    }
+
+    if (unplugAudio.length > 0) {
         CurrentAudioDevice = await selectAudioDefaultDevice(CurrentDevices);
 
         if (CurrentAudioDevice) {
@@ -13397,8 +13432,6 @@ async function handleDeviceChange() {
 
     // Change Video Device (source)
     if (reqChangeVideoDevice) {
-        videoSelect.value = CurrentVideoDevice;
-
         if (CurrentVideoDevice)
             startVideo();
     }
@@ -13473,7 +13506,6 @@ async function fcChangeBaseImageSizeEx(vW, vH) {
 
 async function startVideo() {
     const constraints = await getConstraints();
-    //console.log("constraints", constraints);
 
     if (!constraints) return;
 
@@ -13593,10 +13625,6 @@ function updateVideoStreamFrame() {
     requestAnimationFrame(updateVideoStreamFrame);
 }
 
-//navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange);
-const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 500);
-navigator.mediaDevices.addEventListener('devicechange', debouncedDeviceChangeHandler);
-
 function connectError() {
     setRecordBottonImg(false);
     cleanDisplayCanvas();
@@ -13627,7 +13655,8 @@ $(document.body).on('mouseup', (event) => {
                 break;
         }
     }
-});//const video = document.getElementById('webcam');
+});
+//const video = document.getElementById('webcam');
 var gl;
 var texture;
 var vertexShader;
@@ -13821,18 +13850,29 @@ async function showWebGL() {
     $('#previewArea-WebGL').show();
 }
 
+async function LogDeviceList() {
+    const CurrentDevices = await makeDeviceList();
+    console.log(CurrentDevices);
+}
+
+async function checkMediaDevice() {
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: deviceId } }
+    });
+};
+
 async function testDeviceAvailability(deviceId) {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
             video: { deviceId: { exact: deviceId } }
         });
 
-        //console.log('設備可用:', deviceId);
+        console.log('設備可用:', deviceId);
         stream.getTracks().forEach(track => track.stop()); // 停止媒體流
 
         return true;
     } catch (error) {
-        //console.error('設備不可用:', deviceId, error.message);
+        console.error('設備不可用:', deviceId, error.message);
         return false;
     }
 }
