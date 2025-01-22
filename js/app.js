@@ -2883,7 +2883,7 @@ var aboutContent =
 	'<center><img src="css/images/icon/logo 60.png"></img></center>' +
 	'<label><font size="5" color="#FAFAFA"><center>Documate</center></font></label>' +
 	'<BR>' +
-	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0121</center></font></label>' +
+	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0122</center></font></label>' +
 	'<BR>' +
 	'<div id="companyLink" align="center"><font size="2" color="#88F">Official site : www.inswan.com</font></div>' +
 	'<div id="manualLink" align="center"><font size="2" color="#88F">Email : service@inswan.com</font></div>' +
@@ -3116,7 +3116,7 @@ function createCanvasGroup(parentId, w, h) {
 		'WebGL',
 		'baseImageCanvas',
 		'imageProcessCanvas',
-		'drawingCanvas',
+		//'drawingCanvas',
 		'tempDrawingCanvas',
 		'combineCanvas',
 	];
@@ -3127,6 +3127,11 @@ function createCanvasGroup(parentId, w, h) {
 		childId = parentId + seperator + canvasTbl[i];
 		createImageCanvas(parentId, childId, w, h);
 	}
+
+	childId = parentId + seperator + 'drawingCanvas';
+
+	let maxLength = Math.max(window.screen.width, window.screen.height);
+	createImageCanvas(parentId, childId, maxLength, maxLength);
 }
 
 function resetCanvasGroupSize(modeCfg, w, h) {
@@ -3138,7 +3143,7 @@ function resetCanvasGroupSize(modeCfg, w, h) {
 		'WebGL',
 		'baseImageCanvas',
 		'imageProcessCanvas',
-		'drawingCanvas',
+		//'drawingCanvas',
 		'tempDrawingCanvas',
 		'combineCanvas',
 	];
@@ -7703,15 +7708,11 @@ function previewRedoUndo() {
 
 	if (mc.reqUndo) {
 		mc.reqUndo = false;
-
 		fcDrawingUndo(mc);
-	}
-	else if (mc.reqRedo) {
+	} else if (mc.reqRedo) {
 		mc.reqRedo = false;
-
 		fcDrawingRedo(mc);
-	}
-	else {
+	} else {
 		previewMergeDrawing();
 	}
 }
@@ -7735,12 +7736,29 @@ function previewMergeDrawing() {
 	if (mc.mergeTempDraw) {
 		mc.mergeTempDraw = false;
 
-		previewOverlayCanvas(mc.drawingContext, mc.tempDrawingCanvas);
+		//previewOverlayCanvas(mc.drawingContext, mc.tempDrawingCanvas);
+
+		// ******
+		// const windowX = window.screenX || window.screenLeft;
+		// const windowY = window.screenY || window.screenTop;
+		// const windowWidth = window.innerWidth;
+		// const windowHeight = window.innerHeight;
+		mc.drawingContext.drawImage(
+			mc.tempDrawingCanvas,
+			0, 0, mc.imgW, mc.imgH,
+			0, 0, mc.imgW, mc.imgH
+		);
 
 		fcPushDrawingCanvas(mc);
 	}
 
-	previewOverlayCanvas(mc.combineContext, mc.drawingCanvas);
+	//previewOverlayCanvas(mc.combineContext, mc.drawingCanvas);
+
+	mc.combineContext.drawImage(
+		mc.drawingCanvas,
+		0, 0, mc.imgW, mc.imgH,
+		0, 0, mc.imgW, mc.imgH
+	);
 
 	previewMergeTempDrawing();
 }
@@ -7749,7 +7767,13 @@ function previewMergeTempDrawing() {
 	var mc = previewModeCfg;
 
 	if (mc.hasTempDraw) {
-		previewOverlayCanvas(mc.combineContext, mc.tempDrawingCanvas);
+		//previewOverlayCanvas(mc.combineContext, mc.tempDrawingCanvas);
+
+		mc.combineContext.drawImage(
+			mc.tempDrawingCanvas,
+			0, 0, mc.imgW, mc.imgH,
+			0, 0, mc.imgW, mc.imgH
+		);
 	}
 
 	previewDisplay();
@@ -9913,7 +9937,8 @@ function fcOnMouseOut(event) {
 
 function fcClearCanvas(canvas) {
 	//context.clearRect(0, 0, canvas.width, canvas.height);
-	canvas.width += 0;
+	if (canvas)
+		canvas.width += 0;
 }
 
 function fcClearDispCanvas() {
@@ -9976,8 +10001,8 @@ function fcUpdateDrawStyle() {
 }
 
 function fcDrawConvertRatio() {
-	//return 1;
-	return appFC.imgW / dispW;
+	return 1;
+	//return appFC.imgW / dispW;
 }
 
 function fcSetDrawStartPos(event) {
@@ -9995,11 +10020,8 @@ function fcSetDrawStartPos(event) {
 
 	var ratio = fcDrawConvertRatio();
 
-	appFC.drawStartX = event.offsetX * appFC.imgW / dispW;
-	appFC.drawStartY = event.offsetY * appFC.imgH / dispH;
-
-	// appFC.drawStartX = event.offsetX * ratio;
-	// appFC.drawStartY = event.offsetY * ratio;
+	appFC.drawStartX = event.offsetX * ratio;
+	appFC.drawStartY = event.offsetY * ratio;
 
 	appFC.drawStartX = Math.floor(appFC.drawStartX * 10) / 10;
 	appFC.drawStartY = Math.floor(appFC.drawStartY * 10) / 10;
@@ -10106,7 +10128,12 @@ function fcLoadCanvasFromArray(mc) {
 	storeCanvas.src = mc.canvasArray[mc.canvasStep];
 	storeCanvas.onload = function () {
 		fcClearCanvas(mc.drawingCanvas);
-		mc.drawingContext.drawImage(storeCanvas, 0, 0, mc.imgW, mc.imgH);
+		//mc.drawingContext.drawImage(storeCanvas, 0, 0, mc.imgW, mc.imgH);
+		mc.drawingContext.drawImage(
+			storeCanvas,
+			0, 0, mc.imgW, mc.imgH,
+			0, 0, mc.imgW, mc.imgH
+		);
 		if (mc.imageProcess) mc.imageProcess();
 	}
 }
@@ -10198,6 +10225,8 @@ function fcUpdateFontCfg() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 async function fcChangeBaseImageSize(w, h) {
 	var mc = appFC.curMode;
+
+	console.log("Change BaseImageSize", w, h);
 
 	// if (mc.baseId == "previewArea") {
 	// 	console.log("mc == previewModeCfg");
@@ -10323,7 +10352,9 @@ async function saveBlobToJpg(suggName, blob) {
 		],
 	};
 
-	saveBlobToFile(blob, options);
+	downloadBlob(blob, suggName);
+
+	//saveBlobToFile(blob, options);
 }
 
 async function saveBlobToTiff(suggName, blob) {
@@ -11142,7 +11173,7 @@ function updateSize() {
 
 	updateTitleBarSize();
 
-	adjImageDisplayArea();
+	adjImageDisplayAreaEx();
 
 	fcOnResize();
 
@@ -12778,7 +12809,7 @@ async function StartRecord() {
     document.getElementById("recordtime").style.color = "red";
     document.getElementById("recordtime").style.position = "absolute";
 
-    document.getElementById("recordtime").style.top = 48 * 3.5 + "px"; //"35px";
+    document.getElementById("recordtime").style.top = (48 * 3.5 - 9) + "px"; //"35px";
     document.getElementById("recordtime").style.left = 48 * 1.5 + "px";
 
     //document.getElementById("recordtime").style.bottom = "60px"; //"35px";
@@ -12797,28 +12828,28 @@ async function StartRecord() {
     var canvas = mc['combineCanvas'];
     //var canvas = document.querySelector("canvas");
 
-    var selectedDeviceId = document.getElementById('sdAudioinputScrollbar').value;
-    console.log(selectedDeviceId);
-    // const audioStream = await navigator.mediaDevices.getUserMedia({
-    //     audio: { deviceId: { exact: selectedDeviceId } }
-    // });
-    window.stream.getAudioTracks()[0].enabled = true;
-    recordStream = canvas.captureStream();
-
-    //audioStream.getAudioTracks().forEach(track => recordStream.addTrack(track));
-
-    //console.log(window.stream.getAudioTracks());
-
-    //previewStream = window.stream;
-    //window.stream = recordStream;
+    const audioStream = await navigator.mediaDevices.getUserMedia({
+        audio: { deviceId: { exact: CurrentAudioDevice.deviceId } }
+    });
 
 
-    // recordStream = canvas.captureStream();
-    // if (window.stream != undefined) {
-    // 	window.stream.getAudioTracks()[0].enabled = true;
-    // 	recordStream.addTrack(window.stream.getAudioTracks()[0]);
-    // }
+    //window.stream.getAudioTracks()[0].enabled = true;
+    let canvasStream = canvas.captureStream();
 
+    // 合併音訊和視訊流
+    recordStream = new MediaStream([
+        ...canvasStream.getTracks(),
+        ...audioStream.getTracks()
+    ]);
+
+    // 使用合併的流進行錄影
+    // const mediaRecorder = new MediaRecorder(combinedStream);
+    // mediaRecorder.ondataavailable = (event) => {
+    //     const blob = new Blob([event.data], { type: 'video/webm' });
+    //     const videoURL = URL.createObjectURL(blob);
+    //     console.log("Recording completed. Video URL:", videoURL);
+    // };
+    // mediaRecorder.start();
 
     recordedChunks = [];
 
@@ -12861,8 +12892,23 @@ async function StartRecord() {
     // 	mimeType: 'video/webm;codecs=vp8; '};
 
     mediaRecorder = new MediaRecorder(recordStream, options);
-    mediaRecorder.ondataavailable = handleDataAvailable;
-    mediaRecorder.start();
+    //mediaRecorder.ondataavailable = handleDataAvailable;
+
+    //mediaRecorder = new MediaRecorder(recordStream);
+    mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            console.log("data available");
+            recordedChunks.push(event.data);
+        } else {
+            console.log("no data");
+        }
+    };
+    mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: mimeType });
+        const filename = fcGetFilenameByDateTime(recordingFormat);
+        downloadBlob(blob, filename);
+    };
+    mediaRecorder.start(1000);
 
     //showRecordBtn(true);
 
@@ -12884,10 +12930,10 @@ async function StopRecord() {
     $("#btn_pause").hide();
     mediaRecorder.stop();
 
-    recordStream.getTracks().forEach(function (track) {
-        track.stop();
-        recordStream.removeTrack(track);
-    });
+    // recordStream.getTracks().forEach(function (track) {
+    //     track.stop();
+    //     recordStream.removeTrack(track);
+    // });
 
     // if (window.stream != undefined)
     // 	window.stream.getAudioTracks()[0].enabled = false;
@@ -12937,7 +12983,8 @@ async function SaveRecord() {
         // const store = transaction.objectStore(storeName);
         let blob = new Blob(recordedChunks, { type: 'video/mp4' });
 
-        await saveBlobToMp4(filename, blob);
+        //await saveBlobToMp4(filename, blob);
+        downloadBlob(blob, filename);
 
         // const data = { name: filename, video: blob };
         // store.add(data);
@@ -12958,7 +13005,8 @@ async function SaveRecord() {
 
                 //const data = { name: filename, video: URL.createObjectURL(fixedBlob) };
 
-                await saveBlobToMp4(filename, fixedBlob);
+                //await saveBlobToMp4(filename, fixedBlob);
+                downloadBlob(fixedBlob, filename);
 
                 //store.add(data);
                 recordedChunks = [];
@@ -13052,9 +13100,6 @@ function RecordingTimer() {
 // constant 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-let choseVideoSource = '';
-let currVideoSource = '';
-
 let videoW = appCfg.defPreviewRsoX;
 let videoH = appCfg.defPreviewRsoY;
 
@@ -13092,38 +13137,40 @@ async function makeDeviceList() {
         videoSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
         audioSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
 
-        //PreviousDevices = [];
-        //CurrentDevices = [];
-        supportedDevice = false;
-
         const devices = await navigator.mediaDevices.enumerateDevices();
 
         devices
-            .filter(device => device.kind === "videoinput")
+            .filter(device =>
+                device.kind === "videoinput" &&
+                !device.label.includes("visual") &&
+                !device.label.includes("Basler"))
             .forEach(device => {
-                if (device.label.indexOf('visual') != -1)
-                    return;
-
-                if (device.label.indexOf('Basler') != -1)
-                    return;
-
                 // Build video drop-down list
                 const option = document.createElement('option');
                 option.value = device.deviceId;
                 option.textContent = device.label || `未命名裝置 (${device.deviceId})`;
-                option.isDC = supportedDevice;
+                option.device = device;
                 videoSelect.appendChild(option);
             });
 
         devices
-            .filter(device => device.kind === "audioinput")
+            .filter(device =>
+                device.kind === "audioinput" &&
+                !device.deviceId.includes("default"))
             .forEach(device => {
                 // Build audio drop-down list
                 const option = document.createElement('option');
                 option.value = device.deviceId;
                 option.textContent = device.label || `未命名裝置 (${device.deviceId})`;
+                option.device = device;
                 audioSelect.appendChild(option);
             });
+
+        if (CurrentVideoDevice)
+            videoSelect.value = CurrentVideoDevice.deviceId;
+        if (CurrentAudioDevice)
+            audioSelect.value = CurrentAudioDevice.deviceId;
+
         return devices
             .map(device => ({ deviceId: device.deviceId, label: device.label, kind: device.kind }));
     } catch (error) {
@@ -13139,8 +13186,9 @@ async function selectVideoDefaultDevice(devices) {
     const videoDevices = devices
         .filter(device =>
             device.kind === "videoinput" &&
-            device.label.indexOf('visual') == -1 &&
-            device.label.indexOf('Basler') == -1);
+            !device.label.includes('visual') &&
+            !device.label.includes('Basler')
+        );
 
     for (let i = 0; i < videoDevices.length; i++) {
         if (i == 0) {
@@ -13162,7 +13210,10 @@ async function selectAudioDefaultDevice(devices) {
     let device = null;
 
     const audioDevices = devices
-        .filter(device => device.kind === "audioinput");
+        .filter(device =>
+            device.kind === "audioinput" &&
+            !device.deviceId.includes('default')
+        );
 
     for (let i = 0; i < audioDevices.length; i++) {
         if (i == 0) {
@@ -13185,6 +13236,9 @@ async function initializeDevices() {
 
         if (hasPermissions) {
             PreviousDevices = await makeDeviceList();
+
+            console.log(PreviousDevices);
+
             CurrentVideoDevice = await selectVideoDefaultDevice(PreviousDevices);
             CurrentAudioDevice = await selectAudioDefaultDevice(PreviousDevices);
 
@@ -13243,11 +13297,10 @@ let connectedDevices = [];
 async function checkVideoSource() {
     const videoSelect = document.getElementById(appFC.idVideoinputSelect);
 
-    if (currVideoSource != videoSelect.value) {
-        choseVideoSource = videoSelect.value;
-        CurrentVideoDevice.deviceId = videoSelect.value;
+    if (CurrentVideoDevice.deviceId != videoSelect.value) {
 
-        //const videoOption = videoSelect.options[videoSelect.selectedIndex];
+        const videoOption = videoSelect.options[videoSelect.selectedIndex];
+        CurrentVideoDevice = videoOption.device;
 
         await stopVideo();
         await startVideo();
@@ -13277,7 +13330,7 @@ async function getConstraints() {
         videoH = 1080;
 
         constraints = {
-            audio: { deviceId: { exact: CurrentAudioDevice.deviceId } },
+            //audio: { deviceId: { exact: CurrentAudioDevice.deviceId } },
             video: {
                 deviceId: { exact: CurrentVideoDevice.deviceId },
                 width: { exact: videoW },
@@ -13308,9 +13361,11 @@ async function getConstraints() {
         ];
         await fcUpdateVideoResolution();
 
-        if (CurrentAudioDevice) {
+        if (false) { //(CurrentAudioDevice) {
             constraints = {
-                audio: { deviceId: { exact: CurrentAudioDevice.deviceId } },
+                audio: {
+                    deviceId: { exact: CurrentAudioDevice.deviceId }
+                },
                 video: {
                     deviceId: { exact: CurrentVideoDevice.deviceId },
                 }
@@ -13328,7 +13383,7 @@ async function getConstraints() {
 }
 
 //navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange);
-const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 1000);
+const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 10);
 navigator.mediaDevices.addEventListener('devicechange', debouncedDeviceChangeHandler);
 
 async function handleDeviceChange() {
@@ -13379,9 +13434,10 @@ async function handleDeviceChange() {
             //CurrentVideoDevice = plugVideo[0];
             reqChangeVideoDevice = true;
 
-        } else if (checkDC(plugVideo)) {
+        } else if (checkDC(plugVideo[0])) {
             // 原本存在 video device，插入 DC
             console.log("Plug DC");
+            videoSelect.value = plugVideo[0].deviceId;
             CurrentVideoDevice = plugVideo[0];
             reqChangeVideoDevice = true;
         } else {
@@ -13405,17 +13461,22 @@ async function handleDeviceChange() {
                 videoSelect.value = null;
             }
         } else {
-            videoSelect.value = CurrentVideoDevice.deviceId;
+            // un-plug others
         }
     }
 
     // Audio
     const plugAudio = extra.filter(dev => dev.kind == 'audioinput');
     const unplugAudio = missing.filter(dev => dev.kind == 'audioinput');
+    if (plugAudio.length > 0) console.log("plugAudio", plugAudio);
+    if (unplugAudio.length > 0) console.log("unplugAudio", unplugAudio);
 
     if (plugAudio.length > 0) {
         if (CurrentAudioDevice == null) {
-            audioSelect.value = plugAudio.deviceId;
+            audioSelect.value = plugAudio[0].deviceId;
+            CurrentAudioDevice = plugAudio[0];
+        } else if (checkDC(plugAudio[0])) {
+            audioSelect.value = plugAudio[0].deviceId;
             CurrentAudioDevice = plugAudio[0];
         }
     }
@@ -13431,16 +13492,20 @@ async function handleDeviceChange() {
     }
 
     // Change Video Device (source)
-    if (reqChangeVideoDevice) {
-        if (CurrentVideoDevice)
-            startVideo();
+    if (reqChangeVideoDevice && CurrentVideoDevice) {
+        IsDeviceConnected = false;
+        startVideo();
     }
 
     PreviousDevices = CurrentDevices;
 }
 
-async function checkDC(device) {
-    return device.label.indexOf("Document Camera") > -1;
+function checkDC(device) {
+    if (!device || !device.label) {
+        console.warn("Invalid device object or label is missing");
+        return false;
+    }
+    return device.label.includes("Document Camera");
 }
 
 async function fcChangeBaseImageSizeEx(vW, vH) {
@@ -13488,15 +13553,22 @@ async function fcChangeBaseImageSizeEx(vW, vH) {
     drawingBoardModeCfg.imgH = dispH;
 
     resetCanvasGroupSize(previewModeCfg, dispW, dispH);
-    //resetCanvasGroupSize(drawingBoardModeCfg, dispW, dispH);
+    resetCanvasGroupSize(drawingBoardModeCfg, dispW, dispH);
 
-    fcClearDrawingCanvas();
+    const canvas = document.getElementById("drawingArea-baseImageCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "rgb(255, 255, 255)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawingBoardModeCfg.imageProcess();
 
-    // fcClearCanvas(previewModeCfg.drawCanvas);
-    // fcClearCanvas(drawingBoardModeCfg.drawCanvas);
+    //fcClearDrawingCanvas();
 
-    fcResetCanvasArray(previewModeCfg);
+    //fcClearCanvas(previewModeCfg.drawCanvas);
+    //fcClearCanvas(drawingBoardModeCfg.drawCanvas);
+
+    //fcResetCanvasArray(previewModeCfg);
     //fcResetCanvasArray(drawingBoardModeCfg);
+
     fcUpdateSysInfoWin();
     fcUpdateSysInfoData();
     fcResetZoomRatio();
@@ -13512,8 +13584,6 @@ async function startVideo() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         window.stream = stream;
-
-        currVideoSource = choseVideoSource;
 
         console.log("start Video", window.stream);
         if (!window.stream)
@@ -13618,6 +13688,7 @@ function updateVideoStreamFrame() {
         //console.log(settings.width, settings.height);
 
         if (videoW != settings.width) {
+            console.log("updateVideoStreamFrame => fcChangeBaseImageSizeEx", videoW, settings.width);
             fcChangeBaseImageSizeEx(settings.width, settings.height);
         }
     }
@@ -13850,6 +13921,69 @@ async function showWebGL() {
     $('#previewArea-WebGL').show();
 }
 
+function downloadBlob(blob, filename) {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
+function adjImageDisplayAreaEx() {
+    let id$;
+    let totalW, totalH;
+    let x, y, w, h;
+
+    if (fullPhotoMode) {
+        w = totalW = winW;
+        h = totalH = winH;
+        x = 0;
+        y = 0;
+    }
+    else {
+        w = totalW = winW - appBaseCfg.iconW * 2;
+        h = totalH = winH - titleH - appBaseCfg.drawSetH;
+        x = appBaseCfg.iconW;
+        y = titleH;
+    }
+
+    cssCommonSizeObj.left = x;
+    cssCommonSizeObj.top = y;
+    cssCommonSizeObj.width = w;
+    cssCommonSizeObj.height = h;
+
+    id$ = $('#displayCanvas');
+    id$.css(cssCommonSizeObj);
+    id$.attr('width', w);
+    id$.attr('height', h);
+
+    dispX = x;
+    dispY = y;
+    dispW = w;
+    dispH = h;
+
+    calculateCropVertices(videoW, videoH, w, h);
+    if (gl) gl.viewport(0, 0, dispW, dispH);
+    //console.log("adjImageDisplayArea Disp", dispX, dispY, dispW, dispH);
+
+    previewModeCfg.imgW = dispW;
+    previewModeCfg.imgH = dispH;
+    drawingBoardModeCfg.imgW = dispW;
+    drawingBoardModeCfg.imgH = dispH;
+
+    resetCanvasGroupSize(previewModeCfg, dispW, dispH);
+    resetCanvasGroupSize(drawingBoardModeCfg, dispW, dispH);
+    const canvas = document.getElementById("drawingArea-baseImageCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "rgb(255, 255, 255)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (drawingBoardModeCfg.imageProcessContext)
+        drawingBoardModeCfg.imageProcess();
+}
+
 async function LogDeviceList() {
     const CurrentDevices = await makeDeviceList();
     console.log(CurrentDevices);
@@ -13890,72 +14024,6 @@ function delay(ms) {
 }
 
 
-async function getConstraints_back() {
-    //console.log(navigator.mediaDevices.getSupportedConstraints());
-
-    const videoSelect = document.getElementById(appFC.idVideoinputSelect);
-    const videoOption = videoSelect.options[videoSelect.selectedIndex];
-    const audioSelect = document.getElementById(appFC.idAudioinputSelect);
-
-    let constraints;
-
-    if (videoOption.isDC) {
-        videoW = 1920;
-        videoH = 1080;
-
-        constraints = {
-            audio: { deviceId: { exact: audioSelect.value } },
-            video: {
-                deviceId: { exact: videoOption.value },
-                width: { exact: videoW },
-                height: { exact: videoH }
-            }
-        };
-
-        appFC.reqVideoResolutionList = [
-            // width  height   def 
-            [videoW, videoH, 1]
-        ];
-        await fcUpdateVideoResolution();
-    }
-    else {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId: { exact: videoOption.value } },
-        });
-
-        const videoTrack = stream.getVideoTracks()[0];
-        const settings = videoTrack.getSettings();
-
-        videoW = settings.width;;
-        videoH = settings.height;
-
-        appFC.reqVideoResolutionList = [
-            // width  height   def 
-            [videoW, videoH, 1]
-        ];
-        await fcUpdateVideoResolution();
-
-        if (audioSelect.value) {
-            constraints = {
-                audio: { deviceId: { exact: audioSelect.value } },
-                video: {
-                    deviceId: { exact: videoOption.value },
-                }
-            }
-        } else {
-            constraints = {
-                video: {
-                    deviceId: { exact: videoOption.value },
-                }
-            }
-        }
-    };
-
-    return constraints;
-}
-
-
-
 // window.addEventListener("orientationchange", async () => {
 //     // alert("orientationchange");
 //     // await updateVideoDevices();
@@ -13987,111 +14055,6 @@ async function getConstraints_back() {
 // 		}
 // 	}
 // }
-
-
-// 更新影片裝置
-async function updateVideoDevices_back() {
-    try {
-        console.log("updateVideoDevice");
-        const videoSelect = document.getElementById(appFC.idVideoinputSelect);
-        const audioSelect = document.getElementById(appFC.idAudioinputSelect);
-
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        videoSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
-        audioSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
-
-        var tmpDeviceId = null;
-        var defaultVideoDeviceId = null;
-        var defaultAudioDeviceId = null;
-
-        console.log(devices);
-        supportedDevice = false;
-
-        devices.forEach(device => {
-            if (device.kind === 'videoinput') {
-                var getVendorID = parseInt("0x" + device.label.split(":")[0].split("(")[1], 16);
-                var getProductID = parseInt("0x" + device.label.split(")")[0].split(":")[1], 16);
-
-                const option = document.createElement('option');
-                option.value = device.deviceId;
-                option.textContent = device.label || `未命名裝置 (${device.deviceId})`;
-                videoSelect.appendChild(option);
-
-                // console.log("VID_PID =", getVendorID.toString(16), " _ ", getProductID.toString(16));
-
-                if (tmpDeviceId == null) {
-                    console.log("set default camera");
-                    tmpDeviceId = device.deviceId;
-                }
-
-                if (device.label.indexOf('Document Camera') > -1) {
-                    console.log("find DC");
-                    appFC.reqVideoResolutionList = DevList[0][2];
-                    //fcUpdateVideoResolution();
-                    supportedDevice = true;
-                    tmpDeviceId = device.deviceId;
-                    defaultVideoDeviceId = device.deviceId;
-                }
-
-                // if (true === isSupportedDevice(getVendorID, getProductID)) {
-                //     console.log("find DC with VID_PID");
-                //     fcUpdateVideoResolution();
-                //     supportedDevice = true;
-                //     tmpDeviceId = device.deviceId;
-                // } else if (device.label == 'Document Camera') {
-                //     console.log("find DC");
-                //     appFC.reqVideoResolutionList = DevList[0][2];
-                //     fcUpdateVideoResolution();
-                //     supportedDevice = true;
-                //     tmpDeviceId = device.deviceId;
-                // }
-            }
-
-            if (device.kind === 'audioinput') {
-                const option = document.createElement('option');
-                option.value = device.deviceId;
-                option.textContent = device.label || `未命名裝置 (${device.deviceId})`;
-                audioSelect.appendChild(option);
-
-                if (device.label.indexOf("Document Camera") != -1) {
-                    defaultAudioDeviceId = device.deviceId;
-                }
-            }
-        });
-
-        // use same resolution
-        //appFC.reqVideoResolutionList = DevList[0][2];
-
-        if (!supportedDevice) {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: true
-            });
-            const videoTrack = stream.getVideoTracks()[0];
-            const capabilities = videoTrack.getCapabilities();
-            appFC.reqVideoResolutionList = [
-                // width  height   def 
-                [capabilities.width.max / 2, capabilities.height.max / 2, 1]
-            ];
-
-            // MaxWidth = capabilities.width.max / 2;
-            // MaxHeight = capabilities.height.max / 2;
-            MaxWidth = capabilities.width.max;
-            MaxHeight = capabilities.height.max;
-        }
-
-        //await fcUpdateVideoResolution();
-        videoSelect.value = tmpDeviceId;
-        choseVideoSource = tmpDeviceId;
-
-        if (defaultAudioDeviceId) {
-            console.log("select Document Camera Mic");
-            audioSelect.value = defaultAudioDeviceId;
-        }
-    } catch (error) {
-        console.error("無法列出影片裝置:", error);
-        $('#btn_record').css('background-image', "url('css/images/icon/record3.png')");
-    }
-}
 
 async function testVideoResolution() {
     const w = 1920;
