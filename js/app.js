@@ -2883,7 +2883,7 @@ var aboutContent =
 	'<center><img src="css/images/icon/logo 60.png"></img></center>' +
 	'<label><font size="5" color="#FAFAFA"><center>Documate</center></font></label>' +
 	'<BR>' +
-	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0123</center></font></label>' +
+	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0123.1</center></font></label>' +
 	'<BR>' +
 	'<div id="companyLink" align="center"><font size="2" color="#88F">Official site : www.inswan.com</font></div>' +
 	'<div id="manualLink" align="center"><font size="2" color="#88F">Email : service@inswan.com</font></div>' +
@@ -12779,6 +12779,7 @@ var previewStream;
 
 async function StartRecord() {
     console.log("Start Recording");
+
     if (!IsRecording)//(appFC.imgW != 1280 || appFC.imgH != 720)
     {
         IsRecording = true;
@@ -12826,21 +12827,33 @@ async function StartRecord() {
     // record all canvas
     var mc = previewModeCfg;
     var canvas = mc['combineCanvas'];
-    //var canvas = document.querySelector("canvas");
 
-    const audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: { deviceId: { exact: CurrentAudioDevice.deviceId } }
-    });
+    // const audioStream = await navigator.mediaDevices.getUserMedia({
+    //     audio: { deviceId: { exact: CurrentAudioDevice.deviceId } }
+    // });
+
+    const audioStream = null;
 
 
     //window.stream.getAudioTracks()[0].enabled = true;
     let canvasStream = canvas.captureStream();
 
-    // 合併音訊和視訊流
-    recordStream = new MediaStream([
-        ...canvasStream.getTracks(),
-        ...audioStream.getTracks()
-    ]);
+    //合併音訊和視訊流
+    // recordStream = new MediaStream([
+    //     ...canvasStream.getTracks(),
+    //     ...audioStream.getTracks()
+    // ]);
+
+
+    if (audioStream && audioStream.getTracks()) {
+        recordStream = new MediaStream([
+            ...canvasStream.getTracks(),
+            ...audioStream.getTracks()
+        ]);
+    } else {
+        recordStream = new MediaStream(canvasStream.getTracks());
+    }
+
 
     // 使用合併的流進行錄影
     // const mediaRecorder = new MediaRecorder(combinedStream);
@@ -12912,15 +12925,15 @@ async function StartRecord() {
 
     //showRecordBtn(true);
 
-    function handleDataAvailable(event) {
-        if (event.data && event.data.size > 0) {
-            recordedChunks.push(event.data);
-            //DownloadRecord();
-            SaveRecord();
-        } else {
-            console.log("no data");
-        }
-    }
+    // function handleDataAvailable(event) {
+    //     if (event.data && event.data.size > 0) {
+    //         recordedChunks.push(event.data);
+    //         //DownloadRecord();
+    //         SaveRecord();
+    //     } else {
+    //         console.log("no data");
+    //     }
+    // }
 };
 
 async function StopRecord() {
@@ -13262,7 +13275,7 @@ async function initializeDevices() {
                 await startVideo();
                 return;
             } else {
-                setRecordBottonImg(false);
+                setRecordBottonEnable(false);
             }
         }
     } catch (error) {
@@ -13310,20 +13323,21 @@ async function checkVideoSource() {
 
     if (CurrentVideoDevice.deviceId != videoSelect.value) {
 
+        await stopVideo();
+
         const videoOption = videoSelect.options[videoSelect.selectedIndex];
         CurrentVideoDevice = videoOption.device;
 
-        await stopVideo();
         await startVideo();
     }
 }
 
-function setRecordBottonImg(enable) {
+function setRecordBottonEnable(enable) {
     if (enable) {
-        $('#btn_record').hover(toolBarOnMouseEnter, toolBarOnMouseLeave);
+        $('#btn_record').hover(toolBarOnMouseEnter, toolBarOnMouseLeave).prop('disabled', false);
         $('#btn_record').css('background-image', "url('css/images/icon/record2.png')");
     } else {
-        $('#btn_record').off('mouseenter mouseleave click');
+        $('#btn_record').off('mouseenter mouseleave').prop('disabled', true);
         $('#btn_record').css('background-image', "url('css/images/icon/record3.png')");
     }
 }
@@ -13362,6 +13376,8 @@ async function getConstraints() {
 
         const videoTrack = stream.getVideoTracks()[0];
         const settings = videoTrack.getSettings();
+
+        stream.getTracks().forEach(track => track.stop()); // 停止媒體流
 
         videoW = settings.width;;
         videoH = settings.height;
@@ -13484,7 +13500,7 @@ async function handleDeviceChange() {
 
         if (window.stream.getVideoTracks()[0].readyState === 'ended') {
 
-            setRecordBottonImg(false);
+            setRecordBottonEnable(false);
 
             if (IsRecording) {
                 await StopRecord();
@@ -13625,16 +13641,14 @@ async function startVideo() {
     if (!constraints) return;
 
     try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        window.stream = stream;
-
+        window.stream = await navigator.mediaDevices.getUserMedia(constraints);
         console.log("start Video", window.stream);
         if (!window.stream)
             return;
 
-        if (window.stream.getAudioTracks().length > 0) {
-            window.stream.getAudioTracks()[0].enabled = false;
-        }
+        // if (window.stream.getAudioTracks().length > 0) {
+        //     window.stream.getAudioTracks()[0].enabled = false;
+        // }
 
         videoElement.srcObject = window.stream;
         videoElement.setAttribute('playsinline', '');
@@ -13654,7 +13668,7 @@ async function startVideo() {
                 videoElement.muted = true;
                 videoElement.hidden = true;
                 IsDeviceConnected = true;
-                setRecordBottonImg(true);
+                setRecordBottonEnable(true);
             })
         }
     } catch (error) {
@@ -13668,10 +13682,10 @@ async function stopVideo() {
     if (window.stream) {
         window.stream.getTracks().forEach(track => track.stop());
         console.log("stopVideo", window.stream);
-        window.stream = null;
+        //window.stream = null;
     }
     IsDeviceConnected = false;
-    setRecordBottonImg(false);
+    setRecordBottonEnable(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -13740,7 +13754,7 @@ function updateVideoStreamFrame() {
 }
 
 function connectError() {
-    setRecordBottonImg(false);
+    setRecordBottonEnable(false);
     cleanDisplayCanvas();
 }
 
