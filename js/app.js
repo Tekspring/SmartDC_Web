@@ -2883,7 +2883,7 @@ var aboutContent =
 	'<center><img src="css/images/icon/logo 60.png"></img></center>' +
 	'<label><font size="5" color="#FAFAFA"><center>Documate</center></font></label>' +
 	'<BR>' +
-	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0123.1</center></font></label>' +
+	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0123.2</center></font></label>' +
 	'<BR>' +
 	'<div id="companyLink" align="center"><font size="2" color="#88F">Official site : www.inswan.com</font></div>' +
 	'<div id="manualLink" align="center"><font size="2" color="#88F">Email : service@inswan.com</font></div>' +
@@ -7352,6 +7352,9 @@ async function previewToolBarOnClick(event) {
 			break;
 
 		case "btn_record":
+			let CurrentDevices = await makeDeviceList();
+			console.log(CurrentDevices);
+			break;
 			if (typeof window.stream == "undefined" ||
 				!window.stream.active ||
 				!IsDeviceConnected) {
@@ -13115,6 +13118,7 @@ function RecordingTimer() {
 
 let videoW = appCfg.defPreviewRsoX;
 let videoH = appCfg.defPreviewRsoY;
+//let currStream = null;
 
 const videoElement = document.getElementById('videoSrc');
 let videoLastUpdateTime;
@@ -13211,14 +13215,27 @@ async function selectVideoDefaultDevice(devices) {
         );
 
     for (let i = 0; i < videoDevices.length; i++) {
-        if (i == 0) {
+        if (await testDeviceAvailability(videoDevices[0].deviceId)) {
             device = videoDevices[0];
-        }
+        } else {
+            console.log("XXX");
+            if (PreviousDevices)
+                PreviousDevices = PreviousDevices.filter(device => device.deviceId != videoDevices[0].deviceId);
 
-        if (checkDC(videoDevices[i])) {
-            device = videoDevices[i];
-            break;
+            const videoSelect = document.getElementById(appFC.idVideoinputSelect);
+            const optionToRemove = Array.from(videoSelect.options).find(opt => opt.value === videoDevices[0].deviceId);
+            if (optionToRemove) {
+                optionToRemove.remove();
+            }
         }
+        // if (i == 0) {
+        //     device = videoDevices[0];
+        // }
+
+        // if (checkDC(videoDevices[i])) {
+        //     device = videoDevices[i];
+        //     break;
+        // }
     }
 
     //console.log("Select Video Device", device);
@@ -13409,11 +13426,21 @@ async function getConstraints() {
     return constraints;
 }
 
+let flReqTrackEnded = false;
+
+function handleTrackEnded() {
+    stopVideo();
+    cleanDisplayCanvas();
+    flReqTrackEnded = true;
+}
+
 //navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange);
 const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 500);
 navigator.mediaDevices.addEventListener('devicechange', debouncedDeviceChangeHandler);
 
 async function handleDeviceChange() {
+
+    console.log("ondevicechange", new Date());
 
     // if (window.stream && window.stream.getVideoTracks()[0]) { //(IsDeviceConnected) {
     //     console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
@@ -13495,32 +13522,57 @@ async function handleDeviceChange() {
             // un-plug others
         }
     }
-    if (window.stream && window.stream.getVideoTracks()[0]) { //(IsDeviceConnected) {
-        console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
+    // if (window.stream && window.stream.getVideoTracks()[0]) { //(IsDeviceConnected) {
+    //     console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
 
-        if (window.stream.getVideoTracks()[0].readyState === 'ended') {
+    //     if (window.stream.getVideoTracks()[0].readyState === 'ended') {
 
-            setRecordBottonEnable(false);
+    //         setRecordBottonEnable(false);
 
-            if (IsRecording) {
-                await StopRecord();
-            }
+    //         if (IsRecording) {
+    //             await StopRecord();
+    //         }
 
-            await stopVideo();
-            cleanDisplayCanvas();
+    //         await stopVideo();
+    //         cleanDisplayCanvas();
 
-            if (CurrentVideoDevice)
-                CurrentDevices = CurrentDevices.filter(device => device.deviceId != CurrentVideoDevice.deviceId);
+    //         if (CurrentVideoDevice)
+    //             CurrentDevices = CurrentDevices.filter(device => device.deviceId != CurrentVideoDevice.deviceId);
 
-            CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
-            if (CurrentVideoDevice) {
-                videoSelect.value = CurrentVideoDevice.deviceId;
-                reqChangeVideoDevice = true;
-            } else {
-                videoSelect.value = null;
-            }
-            //PreviousDevices = PreviousDevices.filter(item => item.deviceId !== CurrentVideoDevice.deviceId);
-            //await delay(500);
+    //         CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
+    //         if (CurrentVideoDevice) {
+    //             videoSelect.value = CurrentVideoDevice.deviceId;
+    //             reqChangeVideoDevice = true;
+    //         } else {
+    //             videoSelect.value = null;
+    //         }
+    //         //PreviousDevices = PreviousDevices.filter(item => item.deviceId !== CurrentVideoDevice.deviceId);
+    //         //await delay(500);
+    //     }
+    // }
+    if (flReqTrackEnded) {
+        console.log("flReqTrackEnded");
+        flReqTrackEnded = false;
+
+        setRecordBottonEnable(false);
+
+        if (IsRecording) {
+            await StopRecord();
+        }
+
+        await stopVideo();
+        cleanDisplayCanvas();
+
+        // remove current device from list
+        if (CurrentVideoDevice)
+            CurrentDevices = CurrentDevices.filter(device => device.deviceId != CurrentVideoDevice.deviceId);
+
+        CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
+        if (CurrentVideoDevice) {
+            videoSelect.value = CurrentVideoDevice.deviceId;
+            reqChangeVideoDevice = true;
+        } else {
+            videoSelect.value = null;
         }
     }
 
@@ -13553,7 +13605,8 @@ async function handleDeviceChange() {
     // Change Video Device (source)
     if (reqChangeVideoDevice && CurrentVideoDevice) {
         IsDeviceConnected = false;
-        startVideo();
+        //await stopVideo();
+        await startVideo();
     }
 
     PreviousDevices = CurrentDevices;
@@ -13646,11 +13699,17 @@ async function startVideo() {
         if (!window.stream)
             return;
 
-        // if (window.stream.getAudioTracks().length > 0) {
-        //     window.stream.getAudioTracks()[0].enabled = false;
-        // }
+        const videoTrack = window.stream.getVideoTracks()[0];
+        videoTrack.onended = () => {
+            console.log("Video track has ended.", new Date());
+            handleTrackEnded(); // 你的處理邏輯
+        };
+
 
         videoElement.srcObject = window.stream;
+
+        makeDeviceList();
+
         videoElement.setAttribute('playsinline', '');
         videoElement.setAttribute('webkit-playsinline', '');
         videoElement.onloadeddata = () => {
@@ -13680,9 +13739,20 @@ async function startVideo() {
 async function stopVideo() {
     //console.log("stopVideo");
     if (window.stream) {
-        window.stream.getTracks().forEach(track => track.stop());
+
+        window.stream.getTracks().forEach(function (track) {
+            track.stop();
+            window.stream.removeTrack(track);
+        });
+
         console.log("stopVideo", window.stream);
-        //window.stream = null;
+        setTimeout(() => {
+            console.log("Stream active after stopping all tracks:", window.stream.active);
+            if (window.stream.active == false)
+                window.stream = null;
+        }, 100); // 短延遲檢查
+        videoElement.srcObject = null;
+
     }
     IsDeviceConnected = false;
     setRecordBottonEnable(false);
@@ -13695,7 +13765,7 @@ async function stopVideo() {
 let lastTime = -1;
 let canvasGL;
 
-function updateVideoStreamFrame() {
+async function updateVideoStreamFrame() {
     if (!videoElement) {
         videoElement = document.getElementById('videoSrc');
     }
