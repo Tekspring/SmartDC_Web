@@ -2883,7 +2883,7 @@ var aboutContent =
 	'<center><img src="css/images/icon/logo 60.png"></img></center>' +
 	'<label><font size="5" color="#FAFAFA"><center>Documate</center></font></label>' +
 	'<BR>' +
-	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0122</center></font></label>' +
+	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0123</center></font></label>' +
 	'<BR>' +
 	'<div id="companyLink" align="center"><font size="2" color="#88F">Official site : www.inswan.com</font></div>' +
 	'<div id="manualLink" align="center"><font size="2" color="#88F">Email : service@inswan.com</font></div>' +
@@ -3130,7 +3130,7 @@ function createCanvasGroup(parentId, w, h) {
 
 	childId = parentId + seperator + 'drawingCanvas';
 
-	let maxLength = Math.max(window.screen.width, window.screen.height);
+	let maxLength = Math.max(window.screen.width, window.screen.height) * 1.5;
 	createImageCanvas(parentId, childId, maxLength, maxLength);
 }
 
@@ -10680,14 +10680,14 @@ function fcUpdateSysInfoWin() {
 		//obj.style.width = '60px';
 	}
 
-	obj = document.getElementById("recordtime");
-	if (obj) {
-		var pos = (winW / 2 - 32);
-		if (pos < offsetLimitX)
-			pos = offsetLimitX;
-		obj.style.left = pos + 'px';
-		//obj.style.width = '60px';
-	}
+	// obj = document.getElementById("recordtime");
+	// if (obj) {
+	// 	var pos = (winW / 2 - 32);
+	// 	if (pos < offsetLimitX)
+	// 		pos = offsetLimitX;
+	// 	obj.style.left = pos + 'px';
+	// 	//obj.style.width = '60px';
+	// }
 
 	// obj = document.getElementById("recordtime");
 	// if (obj && IsRecording) {
@@ -12799,7 +12799,7 @@ async function StartRecord() {
     }
 
     IsPause = false;
-    // showAllToolBars(false);
+    showAllToolBars(false);
     // fcCloseActiveDlg();
     // $("#btn_pause").show();	
 
@@ -13137,26 +13137,32 @@ async function makeDeviceList() {
         videoSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
         audioSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
 
-        const devices = await navigator.mediaDevices.enumerateDevices();
+        const devices = (await navigator.mediaDevices.enumerateDevices()).filter(
+            device => device.deviceId.length > 20
+        );
 
         devices
             .filter(device =>
                 device.kind === "videoinput" &&
                 !device.label.includes("visual") &&
-                !device.label.includes("Basler"))
+                !device.label.includes("Basler") &&
+                !device.deviceId.includes("communications"))
             .forEach(device => {
                 // Build video drop-down list
+                //if (testDeviceAvailability(device.deviceId)) {
                 const option = document.createElement('option');
                 option.value = device.deviceId;
                 option.textContent = device.label || `未命名裝置 (${device.deviceId})`;
                 option.device = device;
                 videoSelect.appendChild(option);
+                //}
             });
 
         devices
             .filter(device =>
                 device.kind === "audioinput" &&
-                !device.deviceId.includes("default"))
+                !device.deviceId.includes("default") &&
+                !device.deviceId.includes("communications"))
             .forEach(device => {
                 // Build audio drop-down list
                 const option = document.createElement('option');
@@ -13187,7 +13193,8 @@ async function selectVideoDefaultDevice(devices) {
         .filter(device =>
             device.kind === "videoinput" &&
             !device.label.includes('visual') &&
-            !device.label.includes('Basler')
+            !device.label.includes('Basler') &&
+            !device.deviceId.includes("communications")
         );
 
     for (let i = 0; i < videoDevices.length; i++) {
@@ -13212,7 +13219,8 @@ async function selectAudioDefaultDevice(devices) {
     const audioDevices = devices
         .filter(device =>
             device.kind === "audioinput" &&
-            !device.deviceId.includes('default')
+            !device.deviceId.includes('default') &&
+            !device.deviceId.includes("communications")
         );
 
     for (let i = 0; i < audioDevices.length; i++) {
@@ -13296,6 +13304,9 @@ let connectedDevices = [];
 
 async function checkVideoSource() {
     const videoSelect = document.getElementById(appFC.idVideoinputSelect);
+
+    if (!CurrentVideoDevice)
+        return;
 
     if (CurrentVideoDevice.deviceId != videoSelect.value) {
 
@@ -13383,27 +13394,31 @@ async function getConstraints() {
 }
 
 //navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange);
-const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 10);
+const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 500);
 navigator.mediaDevices.addEventListener('devicechange', debouncedDeviceChangeHandler);
 
 async function handleDeviceChange() {
 
-    if (IsDeviceConnected) {
-        console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
+    // if (window.stream && window.stream.getVideoTracks()[0]) { //(IsDeviceConnected) {
+    //     console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
 
-        if (window.stream.getVideoTracks()[0].readyState === 'ended') {
-            //await SaveRecord();
-            if (IsRecording) {
-                await StopRecord();
-            }
+    //     if (window.stream.getVideoTracks()[0].readyState === 'ended') {
 
-            await stopVideo();
-            cleanDisplayCanvas();
-            //await delay(500);
-        }
-    }
+    //         setRecordBottonImg(false);
 
-    const CurrentDevices = await makeDeviceList();
+    //         if (IsRecording) {
+    //             await StopRecord();
+    //         }
+
+    //         await stopVideo();
+    //         cleanDisplayCanvas();
+
+    //         //PreviousDevices = PreviousDevices.filter(item => item.deviceId !== CurrentVideoDevice.deviceId);
+    //         //await delay(500);
+    //     }
+    // }
+
+    let CurrentDevices = await makeDeviceList();
 
     const missing = PreviousDevices.filter(item =>
         !CurrentDevices.some(current => current.deviceId === item.deviceId)
@@ -13434,12 +13449,12 @@ async function handleDeviceChange() {
             //CurrentVideoDevice = plugVideo[0];
             reqChangeVideoDevice = true;
 
-        } else if (checkDC(plugVideo[0])) {
-            // 原本存在 video device，插入 DC
-            console.log("Plug DC");
-            videoSelect.value = plugVideo[0].deviceId;
-            CurrentVideoDevice = plugVideo[0];
-            reqChangeVideoDevice = true;
+            // } else if (checkDC(plugVideo[0])) {
+            //     // 原本存在 video device，插入 DC
+            //     console.log("Plug DC");
+            //     videoSelect.value = plugVideo[0].deviceId;
+            //     CurrentVideoDevice = plugVideo[0];
+            //     reqChangeVideoDevice = true;
         } else {
             // 原本存在 video device，插入非 DC
             // do nothing
@@ -13462,6 +13477,34 @@ async function handleDeviceChange() {
             }
         } else {
             // un-plug others
+        }
+    }
+    if (window.stream && window.stream.getVideoTracks()[0]) { //(IsDeviceConnected) {
+        console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
+
+        if (window.stream.getVideoTracks()[0].readyState === 'ended') {
+
+            setRecordBottonImg(false);
+
+            if (IsRecording) {
+                await StopRecord();
+            }
+
+            await stopVideo();
+            cleanDisplayCanvas();
+
+            if (CurrentVideoDevice)
+                CurrentDevices = CurrentDevices.filter(device => device.deviceId != CurrentVideoDevice.deviceId);
+
+            CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
+            if (CurrentVideoDevice) {
+                videoSelect.value = CurrentVideoDevice.deviceId;
+                reqChangeVideoDevice = true;
+            } else {
+                videoSelect.value = null;
+            }
+            //PreviousDevices = PreviousDevices.filter(item => item.deviceId !== CurrentVideoDevice.deviceId);
+            //await delay(500);
         }
     }
 
@@ -13625,7 +13668,7 @@ async function stopVideo() {
     if (window.stream) {
         window.stream.getTracks().forEach(track => track.stop());
         console.log("stopVideo", window.stream);
-        //window.stream = null;
+        window.stream = null;
     }
     IsDeviceConnected = false;
     setRecordBottonImg(false);
