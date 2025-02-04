@@ -2883,7 +2883,7 @@ var aboutContent =
 	'<center><img src="css/images/icon/logo 60.png"></img></center>' +
 	'<label><font size="5" color="#FAFAFA"><center>Documate</center></font></label>' +
 	'<BR>' +
-	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0123.2</center></font></label>' +
+	'<label><font size="2" color="#FAFAFA"><center>Ver : 1.25.0204.1</center></font></label>' +
 	'<BR>' +
 	'<div id="companyLink" align="center"><font size="2" color="#88F">Official site : www.inswan.com</font></div>' +
 	'<div id="manualLink" align="center"><font size="2" color="#88F">Email : service@inswan.com</font></div>' +
@@ -3087,6 +3087,7 @@ function createImageCanvas(parentId, childId, w, h) {
 
 function hideCanvasGroup(parentId) {
 	var canvasTbl = [
+		'videoOrg',
 		'WebGL',
 		'baseImageCanvas',
 		'imageProcessCanvas',
@@ -3113,6 +3114,7 @@ function createCanvasGroup(parentId, w, h) {
 	var childId;
 
 	var canvasTbl = [
+		'videoOrg',
 		'WebGL',
 		'baseImageCanvas',
 		'imageProcessCanvas',
@@ -3129,7 +3131,6 @@ function createCanvasGroup(parentId, w, h) {
 	}
 
 	childId = parentId + seperator + 'drawingCanvas';
-
 	let maxLength = Math.max(window.screen.width, window.screen.height) * 1.5;
 	createImageCanvas(parentId, childId, maxLength, maxLength);
 }
@@ -3152,6 +3153,9 @@ function resetCanvasGroupSize(modeCfg, w, h) {
 		childId = modeCfg.baseId + seperator + canvasTbl[i];
 		updateCanvasSize(childId, w, h);
 	}
+
+	childId = modeCfg.baseId + seperator + 'videoOrg';
+	updateCanvasSize(childId, videoW, videoH);
 }
 
 function getCanvasGroupContext(modeCfg) {
@@ -7352,9 +7356,6 @@ async function previewToolBarOnClick(event) {
 			break;
 
 		case "btn_record":
-			let CurrentDevices = await makeDeviceList();
-			console.log(CurrentDevices);
-			break;
 			if (typeof window.stream == "undefined" ||
 				!window.stream.active ||
 				!IsDeviceConnected) {
@@ -11538,7 +11539,7 @@ async function refleshGallery() {
 		var startIndex = ItemsPerPage * appFC.thumbnailCurrPage;
 		var endIndex = Math.min(startIndex + ItemsPerPage, ValidEntry);
 
-		console.log("Gallery RNG", startIndex, endIndex, ValidEntry);
+		//console.log("Gallery RNG", startIndex, endIndex, ValidEntry);
 
 		const transaction = db.transaction(storeName, 'readonly');
 		const store = transaction.objectStore(storeName);
@@ -11582,7 +11583,7 @@ function galleryFillThumbnailDiv_Page() {
 	playbackShowThumbnail(false);
 	$('#thumbDiv').empty();
 
-	console.log(galleryData);
+	//console.log(galleryData);
 
 	// var ValidEntry = galleryData.length;
 
@@ -12821,15 +12822,17 @@ async function StartRecord() {
     document.getElementById("recordtime").style.visibility = "visible";
     //recordingsec = 0;
 
-    var getd = new Date();
+    let getd = new Date();
     recordingStartTime = getd.getTime();
     recordingPauseTime = 0;
     RecordingTimer();
 
 
     // record all canvas
-    var mc = previewModeCfg;
-    var canvas = mc['combineCanvas'];
+    // var mc = previewModeCfg;
+    // var canvas = mc['combineCanvas'];
+    let canvas = document.getElementById("previewArea-videoOrg");
+    console.log(canvas);
 
     // const audioStream = await navigator.mediaDevices.getUserMedia({
     //     audio: { deviceId: { exact: CurrentAudioDevice.deviceId } }
@@ -12840,6 +12843,7 @@ async function StartRecord() {
 
     //window.stream.getAudioTracks()[0].enabled = true;
     let canvasStream = canvas.captureStream();
+    console.log(canvasStream);
 
     //合併音訊和視訊流
     // recordStream = new MediaStream([
@@ -13154,14 +13158,19 @@ async function makeDeviceList() {
         videoSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
         audioSelect.innerHTML = ''; //'<option value="">請選擇一個影片裝置</option>'; // 清空選單
 
-        const devices = (await navigator.mediaDevices.enumerateDevices()).filter(
+        //console.log("make Device List Step 1");
+
+        let devices = await navigator.mediaDevices.enumerateDevices();
+        devices = devices.filter(
             device => device.deviceId.length > 20
         );
+
+        //console.log("make Device List Step 2");
 
         devices
             .filter(device =>
                 device.kind === "videoinput" &&
-                !device.label.includes("visual") &&
+                !device.label.includes("Virtual") &&
                 !device.label.includes("Basler") &&
                 !device.deviceId.includes("communications"))
             .forEach(device => {
@@ -13175,9 +13184,12 @@ async function makeDeviceList() {
                 //}
             });
 
+        //console.log("make Device List Step 3");
+
         devices
             .filter(device =>
                 device.kind === "audioinput" &&
+                !device.label.includes("Virtual") &&
                 !device.deviceId.includes("default") &&
                 !device.deviceId.includes("communications"))
             .forEach(device => {
@@ -13188,6 +13200,8 @@ async function makeDeviceList() {
                 option.device = device;
                 audioSelect.appendChild(option);
             });
+
+        //console.log("make Device List Step 4");
 
         if (CurrentVideoDevice)
             videoSelect.value = CurrentVideoDevice.deviceId;
@@ -13270,7 +13284,8 @@ async function selectAudioDefaultDevice(devices) {
 // 請求權限並顯示裝置選項
 async function initializeDevices() {
     try {
-        const hasPermissions = await checkMediaPermissions();
+        //const hasPermissions = await checkMediaPermissions();
+        const hasPermissions = await checkCameraPermission();
 
         if (hasPermissions) {
             PreviousDevices = await makeDeviceList();
@@ -13295,10 +13310,37 @@ async function initializeDevices() {
                 setRecordBottonEnable(false);
             }
         }
+        else {
+            setRecordBottonEnable(false);
+        }
+
     } catch (error) {
         console.log(error);
         alert("Please connect the camera.");
         connectError();
+    }
+}
+
+async function checkCameraPermission() {
+    try {
+        // 嘗試請求攝影機權限
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        console.log("Camera / Audio permission granted.");
+
+        // 停止攝影機流
+        stream.getTracks().forEach(track => track.stop());
+
+        return true;
+    } catch (error) {
+        if (error.name === "NotAllowedError") {
+            console.warn("Camera permission denied.");
+        } else if (error.name === "NotFoundError") {
+            console.warn("No camera found on the device.");
+        } else {
+            console.error("An error occurred:", error);
+        }
+
+        return false;
     }
 }
 
@@ -13323,7 +13365,7 @@ async function checkMediaPermissions() {
             return true;
         }
     } catch (error) {
-        console.error('無法檢查權限:', error);
+        console.log('無法檢查權限:', error);
         connectError();
         return false;
     }
@@ -13434,13 +13476,37 @@ function handleTrackEnded() {
     flReqTrackEnded = true;
 }
 
+let debounceTimer = null;
+let isEnumerating = false;
+let reqEnumerating = false;
+
 //navigator.mediaDevices.addEventListener('devicechange', handleDeviceChange);
-const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 500);
-navigator.mediaDevices.addEventListener('devicechange', debouncedDeviceChangeHandler);
+// const debouncedDeviceChangeHandler = debounce(handleDeviceChange, 1000);
+// navigator.mediaDevices.addEventListener('devicechange', debouncedDeviceChangeHandler);
+
+navigator.mediaDevices.addEventListener('devicechange', () => {
+    console.log(`[${getCurrentTimeWithMs()}] devicechange 事件觸發 (debounce)`);
+    if (debounceTimer) {
+        clearTimeout(debounceTimer);
+    }
+    debounceTimer = setTimeout(() => {
+        reqEnumerating = true;
+        debounceTimer = null;
+        handleDeviceChange();
+    }, 500);
+});
 
 async function handleDeviceChange() {
+    console.log(`[${getCurrentTimeWithMs()}] handleDeviceChange`);
 
-    console.log("ondevicechange", new Date());
+    if (isEnumerating) {
+        console.log(`[${getCurrentTimeWithMs()}] 目前已有 enumerateDevices 執行中，跳過此次處理`);
+        return;
+    }
+
+    isEnumerating = true;
+    reqEnumerating = false;
+
 
     // if (window.stream && window.stream.getVideoTracks()[0]) { //(IsDeviceConnected) {
     //     console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
@@ -13504,52 +13570,26 @@ async function handleDeviceChange() {
         }
     }
 
-    if (unplugVideo.length > 0) {
-        // unplug current video device
-        if (unplugVideo.some(dev => dev.deviceId == CurrentVideoDevice.deviceId)) {
+    // 合併於 flReqTrackEnded
+    // if (unplugVideo.length > 0) {
+    //     // unplug current video device
+    //     if (unplugVideo.some(dev => dev.deviceId == CurrentVideoDevice.deviceId)) {
 
-            console.log("unplug current video device");
-
-            CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
-
-            if (CurrentVideoDevice) {
-                videoSelect.value = CurrentVideoDevice.deviceId;
-                reqChangeVideoDevice = true;
-            } else {
-                videoSelect.value = null;
-            }
-        } else {
-            // un-plug others
-        }
-    }
-    // if (window.stream && window.stream.getVideoTracks()[0]) { //(IsDeviceConnected) {
-    //     console.log("window.stream.getVideoTracks()[0].readyState", window.stream.getVideoTracks()[0].readyState);
-
-    //     if (window.stream.getVideoTracks()[0].readyState === 'ended') {
-
-    //         setRecordBottonEnable(false);
-
-    //         if (IsRecording) {
-    //             await StopRecord();
-    //         }
-
-    //         await stopVideo();
-    //         cleanDisplayCanvas();
-
-    //         if (CurrentVideoDevice)
-    //             CurrentDevices = CurrentDevices.filter(device => device.deviceId != CurrentVideoDevice.deviceId);
+    //         console.log("unplug current video device");
 
     //         CurrentVideoDevice = await selectVideoDefaultDevice(CurrentDevices);
+
     //         if (CurrentVideoDevice) {
     //             videoSelect.value = CurrentVideoDevice.deviceId;
     //             reqChangeVideoDevice = true;
     //         } else {
     //             videoSelect.value = null;
     //         }
-    //         //PreviousDevices = PreviousDevices.filter(item => item.deviceId !== CurrentVideoDevice.deviceId);
-    //         //await delay(500);
+    //     } else {
+    //         // un-plug others
     //     }
     // }
+
     if (flReqTrackEnded) {
         console.log("flReqTrackEnded");
         flReqTrackEnded = false;
@@ -13610,6 +13650,12 @@ async function handleDeviceChange() {
     }
 
     PreviousDevices = CurrentDevices;
+
+    isEnumerating = false;
+
+    if (reqEnumerating) {
+        await handleDeviceChange();
+    }
 }
 
 function checkDC(device) {
@@ -13691,11 +13737,16 @@ async function fcChangeBaseImageSizeEx(vW, vH) {
 async function startVideo() {
     const constraints = await getConstraints();
 
-    if (!constraints) return;
+    if (!constraints) {
+        return;
+    } else {
+        console.log("Start Video constraints", constraints);
+    }
+
 
     try {
         window.stream = await navigator.mediaDevices.getUserMedia(constraints);
-        console.log("start Video", window.stream);
+        console.log("start Video stream", window.stream);
         if (!window.stream)
             return;
 
@@ -13708,7 +13759,7 @@ async function startVideo() {
 
         videoElement.srcObject = window.stream;
 
-        makeDeviceList();
+        //makeDeviceList();
 
         videoElement.setAttribute('playsinline', '');
         videoElement.setAttribute('webkit-playsinline', '');
@@ -13731,7 +13782,7 @@ async function startVideo() {
             })
         }
     } catch (error) {
-        console.error("無法顯示影像流:", error);
+        console.log("無法顯示影像流:", error);
         connectError();
     }
 }
@@ -13764,6 +13815,7 @@ async function stopVideo() {
 
 let lastTime = -1;
 let canvasGL;
+let contextVideoOrg;
 
 async function updateVideoStreamFrame() {
     if (!videoElement) {
@@ -13774,7 +13826,14 @@ async function updateVideoStreamFrame() {
         canvasGL = document.getElementById('previewArea-WebGL');
     }
 
+    if (!contextVideoOrg) {
+        let canvasVideoOrg = document.getElementById('previewArea-videoOrg');
+        contextVideoOrg = canvasVideoOrg.getContext('2d');
+    }
+
     if (IsDeviceConnected) {
+        contextVideoOrg.drawImage(videoElement, 0, 0, videoW, videoH);
+
         // WebGL Render
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoElement);
@@ -14149,6 +14208,19 @@ function debounce(func, wait) {
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function getCurrentTimeWithMs() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+}
+
 
 
 // window.addEventListener("orientationchange", async () => {
